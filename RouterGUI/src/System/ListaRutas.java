@@ -1,4 +1,4 @@
-package Sistema;
+package System;
 
 import java.util.ArrayList;
 
@@ -7,6 +7,14 @@ public class ListaRutas {
     
     public ListaRutas() {
         rutas = new ArrayList();
+    }
+    
+    public int size() {
+        return rutas.size();
+    }
+    
+    public ArrayList<Ruta> getList() {
+        return rutas;
     }
     
     public Ruta getRuta(String id) {

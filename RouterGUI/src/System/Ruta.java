@@ -1,4 +1,4 @@
-package Sistema;
+package System;
 
 public class Ruta {
     private String id;
