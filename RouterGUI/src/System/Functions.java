@@ -101,7 +101,7 @@ public class Functions {
         int[] queue = new int[n];
         int queue_size = 1;
         queue[0] = first;
-    
+        
         while (queue_size > 0) {
             int current_router = extractMin(distance, queue, queue_size);
             visited[current_router] = true;
@@ -119,7 +119,10 @@ public class Functions {
                     }
                 }
             }
+            
+            System.out.println(queue_size);
         }
+        
         
         int[][] paths = new int[n][n];
         int current_router = last;
@@ -165,5 +168,14 @@ public class Functions {
         queue[i] = router;
         
         return queue_size + 1;
+    }
+    
+    private int remove(int[] queue, int queue_size, int router) {
+        int i = 0;
+        
+        while (i < queue_size && queue[i] != router) i++;
+        for (; i < queue_size - 1; i++) queue[i] = queue[i + 1];
+        
+        return queue_size - 1;
     }
 }

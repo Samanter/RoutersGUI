@@ -1,7 +1,16 @@
-package System;
+package UI.Interface;
 
-public class Main {
-    public static void main(String[] args) {
+import System.Functions;
+import System.Router;
+import System.Ruta;
+import java.util.ArrayList;
+
+public class Main extends javax.swing.JFrame {
+    public Main() {
+        initComponents();
+    }
+    
+    public static void stuff() {
         Functions f = new Functions();
         
         Router router1 = new Router("R1", "Router 1", "Model 1");
@@ -46,7 +55,15 @@ public class Main {
         System.out.println("\nNeighbors of Each Router:");
         
         for (Router router : f.getRouters().getList()) {
-            System.out.println("Router " + router.getId() + " neighbors: " + f.neighbors(router));
+            System.out.print("Router " + router.getId() + " neighbors: ");
+            
+            ArrayList<Router> neighbors = f.neighbors(router);
+            
+            for (int i = 0; i < neighbors.size(); i++) {
+                System.out.print(neighbors.get(i).getNombre() + " ");
+            }
+            
+            System.out.println();
         }
         
         Router source_router = f.getRouter("R1");
@@ -63,4 +80,53 @@ public class Main {
             System.out.println();
         }
     }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 686, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 359, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    public static void main(String args[]) {
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        stuff();
+        
+        java.awt.EventQueue.invokeLater(() -> {
+            new Main().setVisible(true);
+        });
+        
+        
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
 }
