@@ -13,6 +13,10 @@ public class ListaRouters {
         return routers.size();
     }
     
+    public ArrayList<Router> getList() {
+        return routers;
+    }
+    
     public Router getRouter(String id) {
         return (Router) routers.stream().filter(router -> router.getId().equals(id)).findFirst().orElse(null);
     }
