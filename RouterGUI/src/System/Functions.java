@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Functions {
-    private ListaRouters routers;
-    private ListaRutas rutas;
+    private RoutersList routers;
+    private RoutesList rutas;
     
     public Functions() {
-        routers = new ListaRouters();
-        rutas = new ListaRutas();
+        routers = new RoutersList();
+        rutas = new RoutesList();
     }
     
-    public ListaRouters getRouters() {
+    public RoutersList getRouters() {
         return routers;
     }
     
@@ -32,7 +32,7 @@ public class Functions {
         routers.editRouter(router);
     }
     
-    public void addRuta(Ruta ruta) {
+    public void addRuta(Routes ruta) {
         rutas.addRuta(ruta);
     }
     
@@ -40,7 +40,7 @@ public class Functions {
         rutas.removeRuta(id);
     }
     
-    public void editRuta(Ruta ruta) {
+    public void editRuta(Routes ruta) {
         rutas.editRuta(ruta);
     }
     
@@ -122,7 +122,6 @@ public class Functions {
             
             System.out.println(queue_size);
         }
-        
         
         int[][] paths = new int[n][n];
         int current_router = last;

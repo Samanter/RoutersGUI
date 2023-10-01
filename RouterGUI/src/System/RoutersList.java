@@ -2,10 +2,10 @@ package System;
 
 import java.util.ArrayList;
 
-public class ListaRouters {
+public class RoutersList {
     private ArrayList<Router> routers;
     
-    public ListaRouters() {
+    public RoutersList() {
         routers = new ArrayList();
     }
     

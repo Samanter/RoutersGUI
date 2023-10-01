@@ -1,6 +1,6 @@
 package System;
 
-public class Ruta {
+public class Routes {
     private String id;
     private Router router_a;
     private Router router_b;
@@ -13,7 +13,7 @@ public class Ruta {
     private Integer b_interfaz;
     private String interfaz;
 
-    public Ruta(String id, Router router_a, Router router_b, String ip_a, String mask_a, String ip_b, String mask_b, Integer costo, Integer b_referencia, Integer b_interfaz, String interfaz) {
+    public Routes(String id, Router router_a, Router router_b, String ip_a, String mask_a, String ip_b, String mask_b, Integer costo, Integer b_referencia, Integer b_interfaz, String interfaz) {
         this.id = id;
         this.router_a = router_a;
         this.router_b = router_b;
@@ -111,7 +111,7 @@ public class Ruta {
         this.interfaz = interfaz;
     }
     
-    public void setDatos(Ruta ruta) {
+    public void setDatos(Routes ruta) {
         this.ip_a = ruta.getIp_a();
         this.ip_b = ruta.getIp_b();
         this.mask_a = ruta.getMask_a();

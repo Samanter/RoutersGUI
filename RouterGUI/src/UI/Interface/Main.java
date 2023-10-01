@@ -2,12 +2,13 @@ package UI.Interface;
 
 import System.Functions;
 import System.Router;
-import System.Ruta;
+import System.Routes;
 import java.util.ArrayList;
 
 public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
+        stuff();
     }
     
     public static void stuff() {
@@ -35,11 +36,11 @@ public class Main extends javax.swing.JFrame {
         f.addRouter(router9);
         f.addRouter(router10);
 
-        f.addRuta(new Ruta("Route1", router1, router2, "192.168.1.1", "255.255.255.0", "192.168.2.1", "255.255.255.0", 10, 1, 2, "eth0"));
-        f.addRuta(new Ruta("Route2", router2, router3, "192.168.2.1", "255.255.255.0", "192.168.3.1", "255.255.255.0", 15, 2, 3, "eth1"));
-        f.addRuta(new Ruta("Route3", router1, router4, "192.168.1.2", "255.255.255.0", "192.168.4.1", "255.255.255.0", 12, 1, 4, "eth2"));
-        f.addRuta(new Ruta("Route4", router3, router5, "192.168.3.2", "255.255.255.0", "192.168.5.1", "255.255.255.0", 20, 3, 5, "eth3"));
-        f.addRuta(new Ruta("Route5", router4, router6, "192.168.4.2", "255.255.255.0", "192.168.6.1", "255.255.255.0", 18, 4, 6, "eth4"));
+        f.addRuta(new Routes("Route1", router1, router2, "192.168.1.1", "255.255.255.0", "192.168.2.1", "255.255.255.0", 10, 1, 2, "eth0"));
+        f.addRuta(new Routes("Route2", router2, router3, "192.168.2.1", "255.255.255.0", "192.168.3.1", "255.255.255.0", 15, 2, 3, "eth1"));
+        f.addRuta(new Routes("Route3", router1, router4, "192.168.1.2", "255.255.255.0", "192.168.4.1", "255.255.255.0", 12, 1, 4, "eth2"));
+        f.addRuta(new Routes("Route4", router3, router5, "192.168.3.2", "255.255.255.0", "192.168.5.1", "255.255.255.0", 20, 3, 5, "eth3"));
+        f.addRuta(new Routes("Route5", router4, router6, "192.168.4.2", "255.255.255.0", "192.168.6.1", "255.255.255.0", 18, 4, 6, "eth4"));
         
         int[][] adjacencyMatrix = f.adyacencyMatrix();
         
@@ -118,13 +119,9 @@ public class Main extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        stuff();
-        
         java.awt.EventQueue.invokeLater(() -> {
             new Main().setVisible(true);
         });
-        
-        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
