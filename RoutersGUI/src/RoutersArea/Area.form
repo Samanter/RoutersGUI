@@ -98,9 +98,6 @@
             </Property>
             <Property name="radius" type="int" value="40"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addButtonActionPerformed"/>
-          </Events>
           <AuxValues>
             <AuxValue name="JLayeredPane.layer" type="java.lang.Integer" value="100"/>
           </AuxValues>

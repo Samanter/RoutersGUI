@@ -2,26 +2,160 @@ package UI.Interface;
 
 import Structures.PathInfo;
 import System.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
 public class Main extends javax.swing.JFrame {
+    private Functions functions;
+    private Router selected_router = null;
+    private final JPopupMenu popup_menu;
+    private PriorityQueue<Integer> ids;
+    
     public Main() {
         initComponents();
+        functions = new Functions();
+        ids = new PriorityQueue();
+        
+        popup_menu = new JPopupMenu();
+        JMenuItem edit = new JMenuItem("Editar");
+        JMenuItem delete = new JMenuItem("Eliminar");
+        
+        edit.addActionListener((ActionEvent e) -> {
+             if (selected_router != null) {
+                 EditRouter frame = new EditRouter() {
+                     @Override
+                     public void close() {
+                         Main.this.setEnabled(true);
+                         dispose();
+                     }
+                 };
+                 
+                 setEnabled(false);
+                 frame.initData(selected_router);
+                 frame.setVisible(true);
+             }
+        });
+
+        delete.addActionListener((ActionEvent e) -> {
+            if (selected_router != null) {
+                deleteSelectedRouter();
+            }
+        });
+        
+        popup_menu.add(edit);
+        popup_menu.add(delete);
+        area.getMainArea().add(popup_menu);
+        
+        area.getMainArea().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (selected_router != null) {
+                    boolean clicked_outside = true;
+                    for (Router router : functions.getRouters().getList()) {
+                        if (router.getPanel().getBounds().contains(e.getPoint())) {
+                            clicked_outside = false;
+                            break;
+                        }
+                    }
+                    
+                    if (clicked_outside) {
+                        selected_router.getPanel().setSelected(false);
+                        selected_router = null;
+                        repaint();
+                    }
+                }
+            }
+        });
+        
+        area.getButton().addActionListener((ActionEvent e) -> {
+            addRouter();
+        });
+        
+        stuff();
+    }
+    
+    public void addRouter() {
+        if (functions.getRouters().size() >= 100) return;
+        
+        int id;
+        
+        if (ids.isEmpty()) id = functions.getRouters().size();
+        else id = ids.poll();   
+        
+        Router router = new Router(id, "Router " + id, "2111");
+        router.getPanel().setBounds(20, 20, 80, 120);
+        
+        router.getPanel().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (selected_router != null) {
+                    selected_router.getPanel().setSelected(false);
+                }
+
+                router.getPanel().setSelected(true);
+                selected_router = router;
+                
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    showPopupMenu(router.getPanel().getX() + e.getX(), router.getPanel().getY() + e.getY(), router);
+                } 
+            }
+        });
+        
+        functions.addRouter(router);
+        area.getMainArea().add(router.getPanel());
+        repaint();
+    }
+    
+    public void selectRouter(Router router) {
+        if (selected_router != null) {
+            selected_router.getPanel().setSelected(false);
+        }
+        
+        selected_router = router;
+        
+        if (selected_router != null) {
+            selected_router.getPanel().setSelected(true);
+        }
+        
+        repaint();
+    }
+    
+    public void deleteSelectedRouter() {
+        if (selected_router != null) {
+            functions.removeRouter(selected_router.getId());
+            area.getMainArea().remove(selected_router.getPanel());
+            ids.add((selected_router.getId()));
+            selected_router = null;
+            repaint();
+        }
+    }
+    
+     private void showPopupMenu(int x, int y, Router router) {
+        selected_router = router;
+        router.getPanel().setSelected(true);
+        popup_menu.show(this, x, y);
     }
     
     public static void stuff() {
         Functions f = new Functions();
         
-        Router router1 = new Router("R1", "Router 1", "Model 1");
-        Router router2 = new Router("R2", "Router 2", "Model 2");
-        Router router3 = new Router("R3", "Router 3", "Model 3");
-        Router router4 = new Router("R4", "Router 4", "Model 4");
-        Router router5 = new Router("R5", "Router 5", "Model 5");
-        Router router6 = new Router("R6", "Router 6", "Model 6");
-        Router router7 = new Router("R7", "Router 7", "Model 7");
-        Router router8 = new Router("R8", "Router 8", "Model 8");
-        Router router9 = new Router("R9", "Router 9", "Model 9");
-        Router router10 = new Router("R10", "Router 10", "Model 10");
+        Router router1 = new Router(1, "Router 1", "Model 1");
+        Router router2 = new Router(2, "Router 2", "Model 2");
+        Router router3 = new Router(3, "Router 3", "Model 3");
+        Router router4 = new Router(4, "Router 4", "Model 4");
+        Router router5 = new Router(5, "Router 5", "Model 5");
+        Router router6 = new Router(6, "Router 6", "Model 6");
+        Router router7 = new Router(7, "Router 7", "Model 7");
+        Router router8 = new Router(8, "Router 8", "Model 8");
+        Router router9 = new Router(9, "Router 9", "Model 9");
+        Router router10 = new Router(10, "Router 10", "Model 10");
         
         f.addRouter(router1);
         f.addRouter(router2);
@@ -65,8 +199,8 @@ public class Main extends javax.swing.JFrame {
             System.out.println();
         }
         
-        Router source_router = f.getRouter("R1");
-        Router dest_router = f.getRouter("R5");
+        Router source_router = f.getRouter(1);
+        Router dest_router = f.getRouter(5);
         PathInfo path = f.findPaths(source_router, dest_router);
         
         System.out.printf("""
@@ -74,6 +208,7 @@ public class Main extends javax.swing.JFrame {
                           Source: %s
                           Destination: %s
                           Cost: %d
+                          
                           """, source_router.getId(), dest_router.getId(), path.getDistance());
         
         for (int i = 0; i < path.getPath().size(); i++) {

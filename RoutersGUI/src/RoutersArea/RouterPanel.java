@@ -86,8 +86,4 @@ public class RouterPanel extends JPanel {
         this.selected = selected;
         repaint();
     }
-    
-    public void print() {
-        System.out.println(label.getText());
-    }
 }

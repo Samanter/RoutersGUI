@@ -16,6 +16,14 @@ public class Area extends javax.swing.JPanel {
         scrollPane.getHorizontalScrollBar().setBackground(new Color(242, 242, 242, 255));
         scrollPane.getViewport().setBackground(new Color(242, 242, 242, 255));
     }
+    
+    public RoutersArea.MainArea getMainArea() {
+        return mainArea;
+    }
+    
+    public UI.Misc.CustomButton getButton() {
+        return addButton;
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -46,11 +54,6 @@ public class Area extends javax.swing.JPanel {
         addButton.setColorClick(new java.awt.Color(0, 0, 153));
         addButton.setColorOver(new java.awt.Color(0, 102, 255));
         addButton.setRadius(40);
-        addButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
-            }
-        });
 
         jLayeredPane.setLayer(scrollPane, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane.setLayer(addButton, javax.swing.JLayeredPane.PALETTE_LAYER);
@@ -59,7 +62,7 @@ public class Area extends javax.swing.JPanel {
         jLayeredPane.setLayout(jLayeredPaneLayout);
         jLayeredPaneLayout.setHorizontalGroup(
             jLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 881, Short.MAX_VALUE)
+            .addComponent(scrollPane)
             .addGroup(jLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPaneLayout.createSequentialGroup()
                     .addContainerGap(821, Short.MAX_VALUE)
@@ -68,7 +71,7 @@ public class Area extends javax.swing.JPanel {
         );
         jLayeredPaneLayout.setVerticalGroup(
             jLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE)
+            .addComponent(scrollPane)
             .addGroup(jLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPaneLayout.createSequentialGroup()
                     .addContainerGap(548, Short.MAX_VALUE)
@@ -87,10 +90,6 @@ public class Area extends javax.swing.JPanel {
             .addComponent(jLayeredPane)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        mainArea.addRouter();
-    }//GEN-LAST:event_addButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

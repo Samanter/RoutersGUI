@@ -1,4 +1,3 @@
-
 package Structures;
 
 public class iPair {

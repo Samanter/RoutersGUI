@@ -1,23 +1,27 @@
 package System;
 
+import RoutersArea.RouterPanel;
+
 public class Router {
-    private String id;
+    private int id;
     private String nombre;
     private String modelo;
     private int list_id;
+    private RouterPanel panel;
     
-    public Router(String id, String nombre, String modelo) {
+    public Router(int id, String nombre, String modelo) {
         this.id = id;
         this.nombre = nombre;
         this.modelo = modelo;
         list_id = -1;
+        panel = new RouterPanel(nombre);
     }
     
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -45,8 +49,16 @@ public class Router {
         this.list_id = list_id;
     }
     
-    public void setDatos(Router router) {
-        this.nombre = router.getNombre();
-        this.modelo = router.getModelo();
+    public RouterPanel getPanel() {
+        return panel;
+    }
+    
+    public void setPanel(RouterPanel panel) {
+        this.panel = panel;
+    }
+    
+    public void setDatos(String nombre, String modelo) {
+        this.nombre = nombre;
+        this.modelo = modelo;
     }
 }

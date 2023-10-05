@@ -17,7 +17,7 @@ public class Functions {
         return routers;
     }
     
-    public Router getRouter(String id) {
+    public Router getRouter(int id) {
         return routers.getRouter(id);
     }
     
@@ -25,7 +25,7 @@ public class Functions {
         routers.addRouter(router);
     }
     
-    public void removeRouter(String id) {
+    public void removeRouter(int id) {
         routers.removeRouter(id);
     }
     

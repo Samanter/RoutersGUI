@@ -17,8 +17,8 @@ public class RoutersList {
         return routers;
     }
     
-    public Router getRouter(String id) {
-        return (Router) routers.stream().filter(router -> router.getId().equals(id)).findFirst().orElse(null);
+    public Router getRouter(int id) {
+        return (Router) routers.stream().filter(router -> router.getId() == id).findFirst().orElse(null);
     }
     
     public void addRouter(Router router) {
@@ -26,7 +26,7 @@ public class RoutersList {
         routers.add(router);
     }
     
-    public void removeRouter(String id) {
+    public void removeRouter(int id) {
         Router aux = getRouter(id);
         int list_id = aux.getListId();
         routers.remove(getRouter(id));
@@ -37,6 +37,6 @@ public class RoutersList {
     
     public void editRouter(Router router) {
         Router aux = getRouter(router.getId());
-        aux.setDatos(router);
+        aux.setDatos(router.getNombre(), router.getModelo());
     }
 }
