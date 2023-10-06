@@ -33,6 +33,14 @@ public class Functions {
         routers.editRouter(router);
     }
     
+    public RoutesList getRutas() {
+        return rutas;
+    }
+    
+    public Route getRuta(String id) {
+        return rutas.getRuta(id);
+    }
+    
     public void addRuta(Route ruta) {
         rutas.addRuta(ruta);
     }

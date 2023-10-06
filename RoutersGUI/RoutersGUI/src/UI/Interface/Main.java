@@ -41,8 +41,9 @@ public class Main extends javax.swing.JFrame {
                      }
                  };
                  
+                 frame.setMainFrame(this);
+                 frame.initData();
                  setEnabled(false);
-                 frame.initData(selected_router, functions.neighbors(selected_router), functions.getRouters());
                  frame.setVisible(true);
              }
         });
@@ -108,6 +109,14 @@ public class Main extends javax.swing.JFrame {
         });
         
         stuff();
+    }
+    
+    public Functions getFunctions() {
+        return functions;
+    }
+    
+    public Router getSelectedRouter() {
+        return selected_router;
     }
     
     public void addRouter() {
@@ -242,6 +251,7 @@ public class Main extends javax.swing.JFrame {
         for (int i = 0; i < path.getPath().size(); i++) {
             System.out.print(" -> " + f.getRouters().getList().get(path.getPath().get(i)).getId());
         }
+        System.out.println();
     }
     
     @SuppressWarnings("unchecked")

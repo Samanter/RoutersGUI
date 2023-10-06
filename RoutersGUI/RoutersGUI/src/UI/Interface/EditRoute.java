@@ -2,15 +2,13 @@ package UI.Interface;
 
 import System.Route;
 import System.Router;
-import System.RoutersList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import javax.swing.JFrame;
 
 public class EditRoute extends javax.swing.JFrame {
-    Route route;
-    Router router;
+    private Route route;
+    private Main main_frame;
     
     public EditRoute() {
         initComponents();
@@ -27,43 +25,56 @@ public class EditRoute extends javax.swing.JFrame {
         });
     }
     
-    public void initRouters(RoutersList routers, ArrayList<Router> neighbors, int id) {
-        router = routers.getRouter(id);
+    public void setMainFrame(Main main_frame) {
+        this.main_frame = main_frame;
+    }
+    
+    public Route getRoute() {
+        return route;
+    }
+    
+    public void initRouters() {
+        Router router = main_frame.getSelectedRouter();
+        router_a.setText(router.getNombre());
         
-        for (int i = 0; i < routers.size(); i++) {
+        for (int i = 0; i < main_frame.getFunctions().getRouters().size(); i++) {
             boolean exists = false;
             
-            for (int j = 0; j < neighbors.size(); j++) {
-                if (routers.getRouter(i) == routers.getRouter(j)) {
+            for (int j = 0; j < main_frame.getFunctions().neighbors(router).size(); j++) {
+                if (main_frame.getFunctions().getRouters().getRouter(i) == 
+                        main_frame.getFunctions().getRouters().getRouter(j)) {
                     exists = true;
                     break;
                 }
             }
             
-            if (router == routers.getRouter(i)) exists = true;
+            if (router == main_frame.getFunctions().getRouters().getRouter(i)) exists = true;
             
-            if (!exists) router_b.addItem(routers.getRouter(i));
+            if (!exists) router_b.addItem(main_frame.getFunctions().getRouters().getRouter(i));
         }
     }
     
-    public void initData(Route route) {
-        router_a.setText(route.getRouter_a().getNombre());
-        router_b.setSelectedItem(route.getRouter_b());
-        ip_a.setText(route.getIp_a());
-        ip_b.setText(route.getIp_b());
-        mask_a.setText(route.getMask_a());
-        mask_b.setText(route.getMask_b());
-        interfaz.setSelectedItem(route.getInterfaz());
-        b_interfaz.setText(route.getB_interfaz().toString());
-        b_ref.setText(route.getB_referencia().toString());
+    public void initData(String id) {
+        Route init_route = main_frame.getFunctions().getRuta(id);
+        
+        router_a.setText(init_route.getRouter_a().getNombre());
+        router_b.setSelectedItem(init_route.getRouter_b());
+        ip_a.setText(init_route.getIp_a());
+        ip_b.setText(init_route.getIp_b());
+        mask_a.setText(init_route.getMask_a());
+        mask_b.setText(init_route.getMask_b());
+        interfaz.setSelectedItem(init_route.getInterfaz());
+        b_interfaz.setText(init_route.getB_interfaz().toString());
+        b_ref.setText(init_route.getB_referencia().toString());
         
         router_b.setEditable(false);
         b_ref.setEditable(false);
     }
     
     public void setRoute() {
-        route.setRouter_a(router);
+        route.setRouter_a(main_frame.getSelectedRouter());
         route.setRouter_b((Router) router_b.getSelectedItem());
+        route.setId(route.getRouter_a().getId() + "-" + route.getRouter_b().getId());
         route.setIp_a(ip_a.getText());
         route.setIp_b(ip_b.getText());
         route.setMask_a(mask_a.getText());
@@ -71,7 +82,14 @@ public class EditRoute extends javax.swing.JFrame {
         route.setInterfaz((String) interfaz.getSelectedItem());
         route.setB_interfaz(Integer.valueOf(b_interfaz.getText()));
         route.setB_referencia(Integer.valueOf(b_ref.getText()));
-        route.setCosto(route.getB_interfaz() / route.getB_referencia());
+        route.setCosto(route.getB_referencia() / route.getB_interfaz());
+    }
+    
+    public Object[] setTable() {
+        Object[] data = new Object[] { route.getId(), ip_a.getText(), route.getRouter_b().getNombre(),
+        ip_b.getText(), b_ref.getText(), b_interfaz.getText(), route.getInterfaz(), route.getCosto(), "" };
+        
+        return data;
     }
     
     public void close() {
@@ -242,7 +260,7 @@ public class EditRoute extends javax.swing.JFrame {
         invalid6.setForeground(new java.awt.Color(255, 0, 0));
         invalid6.setText("INVÁLIDO");
 
-        interfaz.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FastEthernet", "Gigabit", "10Gigabit", "100Gigabit" }));
+        interfaz.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FastEthernet", "Gigabit", "10Gigabit", "100Gigabit", "Serial" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -254,47 +272,49 @@ public class EditRoute extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(invalid6)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(b_interfaz, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addGap(0, 2, Short.MAX_VALUE)
-                                        .addComponent(jLabel7)
-                                        .addGap(186, 186, 186))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel8)
-                                                .addComponent(jLabel9))
-                                            .addComponent(jLabel4)
-                                            .addComponent(jLabel5))
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel3)
-                                            .addComponent(jLabel2)
-                                            .addComponent(jLabel6))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(interfaz, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel10)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(b_interfaz, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(router_a, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(router_b, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(mask_b, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(ip_b, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(ip_a, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(mask_a, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(b_ref, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addComponent(invalid1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(invalid2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(invalid3, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(invalid4, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(invalid5, javax.swing.GroupLayout.Alignment.TRAILING)))))))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jLabel8)
+                                                    .addComponent(jLabel9))
+                                                .addComponent(jLabel4)
+                                                .addComponent(jLabel5))
+                                            .addGap(0, 0, Short.MAX_VALUE))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel3)
+                                                .addComponent(jLabel2)
+                                                .addComponent(jLabel6))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                            .addGap(0, 2, Short.MAX_VALUE)
+                                            .addComponent(jLabel7)
+                                            .addGap(186, 186, 186)))
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(interfaz, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(router_a, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(router_b, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(mask_b, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(ip_b, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(ip_a, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(mask_a, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(b_ref, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(invalid1, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(invalid2, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(invalid3, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(invalid4, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(invalid5, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                            .addGap(11, 11, 11))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

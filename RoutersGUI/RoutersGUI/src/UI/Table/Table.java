@@ -83,6 +83,16 @@ public class Table extends JTable {
         model.insertRow(0, row);
     }
     
+    public void updateRow(int index, Object[] row) {
+        DefaultTableModel model = (DefaultTableModel) getModel();
+        
+        for (int i = 0; i < row.length; i++) {
+            model.setValueAt(row[i], index, i);
+        }
+        
+        model.fireTableDataChanged();
+    }
+    
     public void clearTable() {
         DefaultTableModel model = (DefaultTableModel) getModel();
         model.setRowCount(0);

@@ -34,6 +34,10 @@ public class Route {
         return id;
     }
     
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     public Router getRouter_a() {
         return router_a;
     }

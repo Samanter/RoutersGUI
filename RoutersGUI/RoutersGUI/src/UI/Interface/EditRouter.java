@@ -1,22 +1,22 @@
 package UI.Interface;
 
-import System.Router;
-import System.RoutersList;
 import UI.Misc.ScrollBar;
+import UI.Table.TableActionCellEditor;
+import UI.Table.TableActionCellRender;
+import UI.Table.TableActionEvent;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 public class EditRouter extends javax.swing.JFrame {
-    private ArrayList<Router> neighbors;
-    private RoutersList routers;
+    private Main main_frame;
     
     public EditRouter() {
         initComponents();
+        invalid1.setVisible(false);
         
         jScrollPane1.setVerticalScrollBar(new ScrollBar());
         jScrollPane1.getVerticalScrollBar().setBackground(new Color(242, 242, 242, 255));
@@ -36,9 +36,6 @@ public class EditRouter extends javax.swing.JFrame {
         jScrollPane4.getVerticalScrollBar().setBackground(new Color(204, 204, 204, 255));
         jScrollPane4.getViewport().setBackground(new Color(204, 204, 204, 255));
         
-        table1.getColumnModel().getColumn(6).setPreferredWidth(30);
-        table1.getColumnModel().getColumn(7).setPreferredWidth(20);
-        
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
         addWindowListener(new WindowAdapter() {
@@ -47,10 +44,56 @@ public class EditRouter extends javax.swing.JFrame {
                 close();
             }
         });
+        
+        TableActionEvent event_route = new TableActionEvent() {
+            @Override
+            public void onEdit(int row) {
+                EditRoute frame = new EditRoute() {
+                    @Override
+                    public void close() {
+                        EditRouter.this.setEnabled(true);
+                        dispose();
+                    }
+
+                    @Override
+                    public void addRoute() {
+                        table1.updateRow(row, setTable());
+                        main_frame.getFunctions().editRuta(getRoute());
+                    }
+                };
+
+                frame.setMainFrame(main_frame);
+                frame.initData((String) table1.getValueAt(row, 0));
+                setEnabled(false);
+                frame.setVisible(true);
+            }
+            
+            @Override
+            public void onDelete(int row) {
+                table1.removeRow(row);
+            }
+        };
+        
+        table1.getColumnModel().getColumn(0).setMinWidth(0);
+        table1.getColumnModel().getColumn(0).setMaxWidth(0);
+        table1.getColumnModel().getColumn(0).setPreferredWidth(0);
+        table1.getColumnModel().getColumn(7).setPreferredWidth(30);
+        table1.getColumnModel().getColumn(8).setPreferredWidth(20);
+        
+        table1.getColumnModel().getColumn(8).setCellRenderer(new TableActionCellRender());
+        table1.getColumnModel().getColumn(8).setCellEditor(new TableActionCellEditor(event_route));
+    }
+    
+    public void setMainFrame(Main main_frame) {
+        this.main_frame = main_frame;
     }
     
     public String getRouterName() {
         return routerName.getText();
+    }
+    
+    public UI.Table.Table getTable() {
+        return table1;
     }
     
     public String getModelName() {
@@ -61,21 +104,16 @@ public class EditRouter extends javax.swing.JFrame {
         return Integer.parseInt(idLabel.getText());
     }
     
-    public void initData(Router router, ArrayList<Router> neighbors, RoutersList routers) {
-        routerName.setText(router.getNombre());
-        modelName.setSelectedItem(router.getModelo());
-        idLabel.setText(((Integer) router.getId()).toString());
-        this.neighbors = neighbors;
-        this.routers = routers;
+    public void initData() {
+        routerName.setText(main_frame.getSelectedRouter().getNombre());
+        modelName.setSelectedItem(main_frame.getSelectedRouter().getModelo());
+        idLabel.setText(((Integer) main_frame.getSelectedRouter().getId()).toString());
     }
     
     public void close() {
     }
     
     public void updateData() {
-    }
-    
-    public void addRoute() {
     }
     
     @SuppressWarnings("unchecked")
@@ -102,6 +140,7 @@ public class EditRouter extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         customButton1 = new UI.Misc.CustomButton();
         customButton2 = new UI.Misc.CustomButton();
+        invalid1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -125,11 +164,11 @@ public class EditRouter extends javax.swing.JFrame {
 
             },
             new String [] {
-                "IP (selec.)", "Nombre", "IP (vecino)", "Ancho de Banda (ref.)", "Ancho de Banda (inter.)", "Interfaz", "Costo", ""
+                "ID", "IP (selec.)", "Nombre", "IP (vecino)", "Ancho de Banda (ref.)", "Ancho de Banda (inter.)", "Interfaz", "Costo", ""
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, true
+                false, false, false, false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -183,7 +222,7 @@ public class EditRouter extends javax.swing.JFrame {
         routerName.setHint("Nombre");
 
         modelName.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        modelName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Modelo 1", "Modelo 2", "Modelo 3", "Modelo 4" }));
+        modelName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2111", "2560", "1941", "2901", "2911", "1841", "2811" }));
 
         idLabel.setForeground(new java.awt.Color(102, 102, 102));
         idLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -261,12 +300,15 @@ public class EditRouter extends javax.swing.JFrame {
             }
         });
 
+        invalid1.setForeground(new java.awt.Color(255, 0, 0));
+        invalid1.setText("No hay suficientes routers");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(29, Short.MAX_VALUE)
+                .addContainerGap(14, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -280,11 +322,13 @@ public class EditRouter extends javax.swing.JFrame {
                                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(invalid1)
+                                .addGap(18, 18, 18)
                                 .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1097, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))))
-                .addContainerGap(29, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(15, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -294,12 +338,13 @@ public class EditRouter extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel1)
-                .addGap(8, 8, 8)
+                .addGap(21, 21, 21)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(12, 12, 12)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel6)
-                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(invalid1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -351,22 +396,29 @@ public class EditRouter extends javax.swing.JFrame {
     }//GEN-LAST:event_customButton1ActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        EditRoute frame = new EditRoute() {
-            @Override
-            public void close() {
-                EditRouter.this.setEnabled(true);
-                dispose();
-            }
-            
-            @Override
-            public void addRoute() {
-                EditRouter.this.addRoute();
-            }
-        };
+        invalid1.setVisible(false);
+        if (main_frame.getFunctions().getRouters().size() < 2) invalid1.setVisible(true);
         
-        frame.initRouters(routers, neighbors, Integer.parseInt(idLabel.getText()));
-        setEnabled(false);
-        frame.setVisible(true);
+        if (!invalid1.isVisible()) {
+            EditRoute frame = new EditRoute() {
+                @Override
+                public void close() {
+                    EditRouter.this.setEnabled(true);
+                    dispose();
+                }
+
+                @Override
+                public void addRoute() {
+                    table1.addRow(setTable());
+                    main_frame.getFunctions().addRuta(getRoute());
+                }
+            };
+
+            frame.setMainFrame(main_frame);
+            frame.initRouters();
+            setEnabled(false);
+            frame.setVisible(true);
+        }
     }//GEN-LAST:event_addButtonActionPerformed
 
     public static void main(String args[]) {
@@ -396,6 +448,7 @@ public class EditRouter extends javax.swing.JFrame {
     private UI.Misc.CustomButton customButton1;
     private UI.Misc.CustomButton customButton2;
     private javax.swing.JLabel idLabel;
+    private javax.swing.JLabel invalid1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
