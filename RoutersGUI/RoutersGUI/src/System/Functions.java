@@ -45,8 +45,8 @@ public class Functions {
         rutas.addRuta(ruta);
     }
     
-    public void removeRuta(String id) {
-        rutas.removeRuta(id);
+    public void removeRuta(Route ruta) {
+        rutas.removeRuta(ruta);
     }
     
     public void editRuta(Route ruta) {
@@ -93,11 +93,28 @@ public class Functions {
         Graph g = new Graph(n);
         
         for (int i = 0; i < rutas.size(); i++) {
-            g.addEdge(rutas.getList().get(i).getRouter_a().getListId(), 
+            g.addEdge(
+                    rutas.getList().get(i).getRouter_a().getListId(), 
                     rutas.getList().get(i).getRouter_b().getListId(), 
-                    rutas.getList().get(i).getCosto());
+                    rutas.getList().get(i).getCosto()
+            );
         }
 
         return g.shortestPath(router_a.getListId(), router_b.getListId());
+    }
+    
+    public ArrayList<PathInfo> findThreeShortestPaths(Router router_a, Router router_b) {
+        int n = routers.size();
+        Graph g = new Graph(n);
+
+        for (int i = 0; i < rutas.size(); i++) {
+            g.addEdge(
+                rutas.getList().get(i).getRouter_a().getListId(),
+                rutas.getList().get(i).getRouter_b().getListId(),
+                rutas.getList().get(i).getCosto()
+            );
+        }
+
+        return g.findThreeShortestPaths(router_a.getListId(), router_b.getListId());
     }
 }

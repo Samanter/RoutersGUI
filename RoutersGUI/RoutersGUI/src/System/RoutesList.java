@@ -25,8 +25,8 @@ public class RoutesList {
         rutas.add(ruta);
     }
     
-    public void removeRuta(String id) {
-        rutas.remove(getRuta(id));
+    public void removeRuta(Route ruta) {
+        rutas.remove(ruta);
     }
     
     public void editRuta(Route ruta) {

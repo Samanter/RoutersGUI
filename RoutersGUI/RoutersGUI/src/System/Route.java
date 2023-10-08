@@ -1,5 +1,10 @@
 package System;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.geom.Line2D;
+import javax.swing.JLabel;
+
 public class Route {
     private String id;
     private Router router_a;
@@ -12,8 +17,16 @@ public class Route {
     private Integer b_referencia;
     private Integer b_interfaz;
     private String interfaz;
+    private Line2D connection;
+    private JLabel label;
     
     public Route() {
+        costo = 0;
+        interfaz = "";
+        connection = new Line2D.Double(new Point(), new Point());
+        label = new JLabel("New Route");
+        label.setForeground(Color.BLACK);
+        label.setBounds(0, 0, 200, 16);
     }
     
     public Route(String id, Router router_a, Router router_b, String ip_a, String mask_a, String ip_b, String mask_b, Integer costo, Integer b_referencia, Integer b_interfaz, String interfaz) {
@@ -28,6 +41,8 @@ public class Route {
         this.b_referencia = b_referencia;
         this.b_interfaz = b_interfaz;
         this.interfaz = interfaz;
+        connection = new Line2D.Double(new Point(), new Point());
+        label = new JLabel();
     }      
     
     public String getId() {
@@ -92,6 +107,7 @@ public class Route {
 
     public void setCosto(Integer costo) {
         this.costo = costo;
+        label.setText("Costo: " + costo + " / " + interfaz);
     }
 
     public Integer getB_referencia() {
@@ -116,6 +132,23 @@ public class Route {
 
     public void setInterfaz(String interfaz) {
         this.interfaz = interfaz;
+        label.setText("Costo: " + costo + " / " + interfaz);
+    }
+    
+   public Line2D getConnection() {
+        return connection;
+    }
+    
+    public void setConnection(Point p1, Point p2) {
+        connection = new Line2D.Double(p1, p2);
+    }
+    
+    public JLabel getLabel() {
+        return label;
+    }
+    
+    public void setLabel(JLabel label) {
+        this.label = label;
     }
     
     public void setDatos(Route ruta) {
@@ -126,5 +159,7 @@ public class Route {
         this.costo = ruta.getCosto();
         this.b_interfaz = ruta.getB_interfaz();
         this.interfaz = ruta.getInterfaz();
+        
+        label.setText("Costo: " + costo + " / " + interfaz);
     }
 }

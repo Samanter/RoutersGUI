@@ -1,7 +1,8 @@
 package Structures;
 
 public class iPair {
-    int first, second;
+    int first;
+    int second;
 
     iPair(int first, int second) {
         this.first = first;

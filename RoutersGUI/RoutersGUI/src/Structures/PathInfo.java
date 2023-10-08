@@ -1,21 +1,21 @@
 package Structures;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class PathInfo {
-        int distance;
-        List<Integer> path;
+    private final int distance;
+    private final ArrayList<Integer> path;
 
-        public PathInfo(int distance, List<Integer> path) {
-            this.distance = distance;
-            this.path = path;
-        }
-
-        public int getDistance() {
-            return distance;
-        }
-
-        public List<Integer> getPath() {
-            return path;
-        }
+    public PathInfo(int distance, ArrayList<Integer> path) {
+        this.distance = distance;
+        this.path = path;
     }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public ArrayList<Integer> getPath() {
+        return path;
+    }
+}

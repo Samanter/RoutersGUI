@@ -1,6 +1,6 @@
 package System;
 
-import RoutersArea.RouterPanel;
+import UI.Misc.RouterPanel;
 
 public class Router {
     private int id;
