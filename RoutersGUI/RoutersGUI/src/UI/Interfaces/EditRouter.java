@@ -22,6 +22,7 @@ public class EditRouter extends javax.swing.JFrame {
     private ArrayList<Route> table_routes;
     private ArrayList<Route> deleted_routes;
     private ArrayList<Boolean> is_new;
+    private ArrayList<Integer> pos_list;
     
     public EditRouter() {
         initComponents();
@@ -30,17 +31,18 @@ public class EditRouter extends javax.swing.JFrame {
         table_routes = new ArrayList();
         deleted_routes = new ArrayList();
         is_new = new ArrayList();
+        pos_list = new ArrayList();
         
         jScrollPane1.setVerticalScrollBar(new ScrollBar());
         jScrollPane1.getVerticalScrollBar().setBackground(new Color(242, 242, 242, 255));
-        jScrollPane1.getViewport().setBackground(new Color(242, 242, 242, 255));
+        jScrollPane1.getViewport().setBackground(new Color(255, 255, 255, 255));
         JPanel p = new JPanel();
         p.setBackground(new Color(255, 255, 255, 255));
         jScrollPane1.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
         
         jScrollPane2.setVerticalScrollBar(new ScrollBar());
         jScrollPane2.getVerticalScrollBar().setBackground(new Color(242, 242, 242, 255));
-        jScrollPane2.getViewport().setBackground(new Color(242, 242, 242, 255));
+        jScrollPane2.getViewport().setBackground(new Color(255, 255, 255, 255));
         JPanel p2 = new JPanel();
         p2.setBackground(new Color(255, 255, 255, 255));
         jScrollPane2.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p2);
@@ -89,7 +91,7 @@ public class EditRouter extends javax.swing.JFrame {
                 };
 
                 frame.setMainFrame(main_frame);
-                frame.initData(table_routes.get(row));
+                frame.initData(pos_list.get(row), table_routes.get(row));
                 setEnabled(false);
                 frame.setVisible(true);
             }
@@ -161,29 +163,30 @@ public class EditRouter extends javax.swing.JFrame {
         
         for (Route route : main_frame.getFunctions().getRutas().getList()) {
             if (route.getRouter_a() == main_frame.getSelectedRouter()) {
-                table1.addRow(routeObject(route, 0));
+                table1.addRow(routeObject(0, route));
             }
             else if (route.getRouter_b() == main_frame.getSelectedRouter())  {
-                table1.addRow(routeObject(route, 1));
+                table1.addRow(routeObject(1, route));
             }
         }
     }
     
-    public Object[] routeObject(Route route, int pos) {
+    public Object[] routeObject(int pos, Route route) {
         Object[] data;
         
-        if (pos == 1) {
-            data = new Object[] { route.getId(), route.getIp_b(), route.getRouter_b().getNombre(),
-            route.getIp_a(), route.getB_referencia(), route.getB_interfaz(), route.getInterfaz(), 
+        if (pos == 0) {
+            data = new Object[] { route.getId(), route.getIp_a(), route.getRouter_b().getNombre(),
+            route.getIp_b(), route.getB_referencia(), route.getB_interfaz(), route.getInterfaz(), 
             route.getCosto(), "" };
         }
         else {
-            data = new Object[] { route.getId(), route.getIp_a(), route.getRouter_a().getNombre(),
-            route.getIp_b(), route.getB_referencia(), route.getB_interfaz(), route.getInterfaz(), 
+            data = new Object[] { route.getId(), route.getIp_b(), route.getRouter_a().getNombre(),
+            route.getIp_a(), route.getB_referencia(), route.getB_interfaz(), route.getInterfaz(), 
             route.getCosto(), "" };
         }
         
         table_routes.add(route);
+        pos_list.add(pos);
         is_new.add(false);
         
         return data;

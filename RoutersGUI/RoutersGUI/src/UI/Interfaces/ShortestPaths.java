@@ -1,7 +1,7 @@
 package UI.Interfaces;
 
-import Structures.Graph;
 import Structures.PathInfo;
+import System.Route;
 import System.Router;
 import UI.Misc.ScrollBar;
 import java.awt.Color;
@@ -16,9 +16,16 @@ public class ShortestPaths extends javax.swing.JFrame {
     private Main main_frame;
     private Router start_router;
     private Router end_router;
+    private ArrayList<PathInfo> paths;
     
     public ShortestPaths() {
         initComponents();
+        
+        path2Label.setVisible(false);
+        jScrollPane4.setVisible(false);
+        
+        path3Label.setVisible(false);
+        jScrollPane5.setVisible(false);
         
         JPanel p = new JPanel();
         p.setBackground(new Color(255, 255, 255, 255));
@@ -35,17 +42,17 @@ public class ShortestPaths extends javax.swing.JFrame {
         
         jScrollPane3.setVerticalScrollBar(new ScrollBar());
         jScrollPane3.getVerticalScrollBar().setBackground(new Color(242, 242, 242, 255));
-        jScrollPane3.getViewport().setBackground(new Color(242, 242, 242, 255));
+        jScrollPane3.getViewport().setBackground(new Color(255, 255, 255, 255));
         jScrollPane3.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
         
         jScrollPane4.setVerticalScrollBar(new ScrollBar());
         jScrollPane4.getVerticalScrollBar().setBackground(new Color(242, 242, 242, 255));
-        jScrollPane4.getViewport().setBackground(new Color(242, 242, 242, 255));
+        jScrollPane4.getViewport().setBackground(new Color(255, 255, 255, 255));
         jScrollPane4.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p2);
         
         jScrollPane5.setVerticalScrollBar(new ScrollBar());
         jScrollPane5.getVerticalScrollBar().setBackground(new Color(242, 242, 242, 255));
-        jScrollPane5.getViewport().setBackground(new Color(242, 242, 242, 255));
+        jScrollPane5.getViewport().setBackground(new Color(255, 255, 255, 255));
         jScrollPane5.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p3);
         
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -67,14 +74,56 @@ public class ShortestPaths extends javax.swing.JFrame {
         end_router = r2;
     }
     
+    public void addRoute(int pos, int table, Route route) {
+        String name1, name2, ip1, ip2;
+        
+        if (pos == 0) {
+            name1 = route.getRouter_a().getNombre();
+            name2 = route.getRouter_b().getNombre();
+            ip1 = route.getIp_a();
+            ip2 = route.getIp_b();
+        }
+        else {
+            name1 = route.getRouter_b().getNombre();
+            name2 = route.getRouter_a().getNombre();
+            ip1 = route.getIp_b();
+            ip2 = route.getIp_a();
+        }
+        
+        Object[] data = new Object[] { name1, ip1, name2, ip2, route.getB_referencia(), 
+            route.getB_interfaz(), route.getInterfaz(), route.getCosto() };
+        
+        switch (table) {
+            case 1 -> table1.addRow(data);
+            case 2 -> table2.addRow(data);
+            default -> table3.addRow(data);
+        }
+    }
+    
+    public void pathToTable(int table) {
+        for (int i = 0; i < paths.get(table - 1).getPath().size() - 1; i++) {
+            Router r1 = main_frame.getFunctions().getRouter(paths.get(table - 1).getPath().get(i));
+            Router r2 = main_frame.getFunctions().getRouter(paths.get(table - 1).getPath().get(i + 1));
+            
+            String test_id1 = r1.getId() + "-" + r2.getId();
+            String test_id2 = r2.getId() + "-" + r1.getId();
+            
+            if (main_frame.getFunctions().getRuta(test_id1) != null) {
+                addRoute(0, table, main_frame.getFunctions().getRuta(test_id1));
+            }
+            else if (main_frame.getFunctions().getRuta(test_id2) != null) {
+                addRoute(1, table, main_frame.getFunctions().getRuta(test_id2));
+            }
+        }
+    }
+    
     public void initData() {
-         ArrayList<PathInfo> paths = main_frame.getFunctions().findThreeShortestPaths(start_router, end_router);
+        paths = main_frame.getFunctions().findThreeShortestPaths(start_router, end_router);
+        start_endLabel.setText("Caminos: " + start_router + " a " + end_router);
         
         String path1 = "";
         String path2 = "";
         String path3 = "";
-        
-        start_endLabel.setText("Caminos: " + start_router + " a " + end_router);
         
         for (int router_id : paths.get(0).getPath()) {
             path1 += main_frame.getFunctions().getRouter(router_id).getNombre() + " -> ";
@@ -82,25 +131,33 @@ public class ShortestPaths extends javax.swing.JFrame {
         
         path1 = path1.substring(0, path1.length() - 3);
         path1Label.setText(path1);
+        pathToTable(1);
         
         if (paths.size() > 1) {
+            path2Label.setVisible(true);
+            jScrollPane4.setVisible(true);
+            
             for (int router_id : paths.get(1).getPath()) {
                 path2 += main_frame.getFunctions().getRouter(router_id).getNombre() + " -> ";
             }
+            
             path2 = path2.substring(0, path2.length() - 3);
             path2Label.setText(path2);
+            pathToTable(2);
             
             if (paths.size() > 2) {
+                path3Label.setVisible(true);
+                jScrollPane5.setVisible(true);
+                
                 for (int router_id : paths.get(2).getPath()) {
                     path3 += main_frame.getFunctions().getRouter(router_id).getNombre() + " -> ";
                 }
+                
+                path3 = path3.substring(0, path3.length() - 3);
+                path3Label.setText(path3);
+                pathToTable(3);
             }
-            
-            path3 = path3.substring(0, path3.length() - 3);
-            path3Label.setText(path3);
         }
-        
-        
     }
     
     public void close() {
@@ -124,6 +181,7 @@ public class ShortestPaths extends javax.swing.JFrame {
         table3 = new UI.Table.Table();
         path3Label = new javax.swing.JLabel();
         customButton1 = new UI.Misc.CustomButton();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -144,15 +202,14 @@ public class ShortestPaths extends javax.swing.JFrame {
         table1.setBackground(new java.awt.Color(255, 255, 255));
         table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "IP (selec.)", "Nombre", "IP (vecino)", "Ancho de Banda (ref.)", "Ancho de Banda (inter.)", "Interfaz", "Costo"
+                "Nombre (local)", "IP (local)", "Nombre (vecino)", "IP (vecino)", "Ancho de Banda (ref.)", "Ancho de Banda (inter.)", "Interfaz", "Costo"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -170,15 +227,14 @@ public class ShortestPaths extends javax.swing.JFrame {
         table2.setBackground(new java.awt.Color(255, 255, 255));
         table2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "IP (selec.)", "Nombre", "IP (vecino)", "Ancho de Banda (ref.)", "Ancho de Banda (inter.)", "Interfaz", "Costo"
+                "Nombre (local)", "IP (local)", "Nombre (vecino)", "IP (vecino)", "Ancho de Banda (ref.)", "Ancho de Banda (inter.)", "Interfaz", "Costo"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -192,15 +248,14 @@ public class ShortestPaths extends javax.swing.JFrame {
         table3.setBackground(new java.awt.Color(255, 255, 255));
         table3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "IP (selec.)", "Nombre", "IP (vecino)", "Ancho de Banda (ref.)", "Ancho de Banda (inter.)", "Interfaz", "Costo"
+                "Nombre (local)", "IP (local)", "Nombre (vecino)", "IP (vecino)", "Ancho de Banda (ref.)", "Ancho de Banda (inter.)", "Interfaz", "Costo"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                true, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -225,25 +280,30 @@ public class ShortestPaths extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel2.setText("a");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(start_endLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(path2Label)
-                        .addContainerGap())
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE)
-                            .addComponent(path1Label, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(path3Label, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGap(0, 30, Short.MAX_VALUE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(path2Label)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(path1Label)
+                                .addGap(87, 87, 87))
+                            .addComponent(path3Label)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1027, Short.MAX_VALUE)
+                            .addComponent(jScrollPane4)
+                            .addComponent(jScrollPane5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addContainerGap(21, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(customButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -257,18 +317,21 @@ public class ShortestPaths extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(path1Label)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(path2Label)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(path3Label)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(path2Label)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(path3Label)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addComponent(customButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                .addGap(22, 22, 22))
         );
 
         jScrollPane1.setViewportView(jPanel1);
@@ -327,6 +390,7 @@ public class ShortestPaths extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private UI.Misc.CustomButton customButton1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;

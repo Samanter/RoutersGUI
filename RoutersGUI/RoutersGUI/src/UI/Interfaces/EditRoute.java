@@ -16,11 +16,13 @@ import javax.swing.JScrollPane;
 public class EditRoute extends javax.swing.JFrame {
     private final Route route;
     private Main main_frame;
+    private int pos;
     
     public EditRoute() {
         initComponents();
         setInvisible();
         route = new Route();
+        pos = 0;
         
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -83,13 +85,26 @@ public class EditRoute extends javax.swing.JFrame {
         return router_b.getItemCount() > 0;
     }
     
-    public void initData(Route init_route) {
-        router_a.setText(init_route.getRouter_a().getNombre());
-        router_b.setSelectedItem(init_route.getRouter_b());
-        ip_a.setText(init_route.getIp_a());
-        ip_b.setText(init_route.getIp_b());
-        mask_a.setText(init_route.getMask_a());
-        mask_b.setText(init_route.getMask_b());
+    public void initData(int pos, Route init_route) {
+        this.pos = pos;
+        
+        if (pos == 0) {
+            router_a.setText(init_route.getRouter_a().getNombre());
+            router_b.setSelectedItem(init_route.getRouter_b());
+            ip_a.setText(init_route.getIp_a());
+            ip_b.setText(init_route.getIp_b());
+            mask_a.setText(init_route.getMask_a());
+            mask_b.setText(init_route.getMask_b());
+        }
+        else {
+            router_a.setText(init_route.getRouter_b().getNombre());
+            router_b.setSelectedItem(init_route.getRouter_a());
+            ip_a.setText(init_route.getIp_b());
+            ip_b.setText(init_route.getIp_a());
+            mask_a.setText(init_route.getMask_b());
+            mask_b.setText(init_route.getMask_a());
+        }
+        
         interfaz.setSelectedItem(init_route.getInterfaz());
         b_interfaz.setText(init_route.getB_interfaz().toString());
         b_ref.setText(init_route.getB_referencia().toString());
@@ -113,8 +128,16 @@ public class EditRoute extends javax.swing.JFrame {
     }
     
     public Object[] setTable() {
-        Object[] data = new Object[] { route.getId(), ip_a.getText(), route.getRouter_b().getNombre(),
-        ip_b.getText(), b_ref.getText(), b_interfaz.getText(), route.getInterfaz(), route.getCosto(), "" };
+        Object[] data;
+        
+        if (pos == 0) {
+            data = new Object[] { route.getId(), ip_a.getText(), route.getRouter_b().getNombre(),
+            ip_b.getText(), b_ref.getText(), b_interfaz.getText(), route.getInterfaz(), route.getCosto(), "" };
+        }
+        else {
+            data = new Object[] { route.getId(), ip_b.getText(), route.getRouter_a().getNombre(),
+            ip_a.getText(), b_ref.getText(), b_interfaz.getText(), route.getInterfaz(), route.getCosto(), "" };
+        }
         
         return data;
     }

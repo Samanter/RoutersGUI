@@ -180,7 +180,9 @@ public class Main extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 System.out.println("Lista de rutas");
                 for (Route route : functions.getRutas().getList()) {
-                    System.out.println(route.getId());
+                    System.out.println(route.getId() + " " + route.getRouter_a() + " " + 
+                            route.getIp_a() + " " + route.getMask_a() + " " + route.getRouter_b() + 
+                            " " + route.getIp_b() + " " + route.getMask_b());
                 }
                 System.out.println();
             }
