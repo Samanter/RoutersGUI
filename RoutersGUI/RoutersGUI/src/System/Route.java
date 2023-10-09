@@ -19,6 +19,7 @@ public class Route {
     private String interfaz;
     private Line2D connection;
     private JLabel label;
+    private boolean selected;
     
     public Route() {
         costo = 0;
@@ -27,23 +28,8 @@ public class Route {
         label = new JLabel("New Route");
         label.setForeground(Color.BLACK);
         label.setBounds(0, 0, 200, 16);
-    }
-    
-    public Route(String id, Router router_a, Router router_b, String ip_a, String mask_a, String ip_b, String mask_b, Integer costo, Integer b_referencia, Integer b_interfaz, String interfaz) {
-        this.id = id;
-        this.router_a = router_a;
-        this.router_b = router_b;
-        this.ip_a = ip_a;
-        this.mask_a = mask_a;
-        this.ip_b = ip_b;
-        this.mask_b = mask_b;
-        this.costo = costo;
-        this.b_referencia = b_referencia;
-        this.b_interfaz = b_interfaz;
-        this.interfaz = interfaz;
-        connection = new Line2D.Double(new Point(), new Point());
-        label = new JLabel();
-    }      
+        selected = false;
+    }     
     
     public String getId() {
         return id;
@@ -149,6 +135,14 @@ public class Route {
     
     public void setLabel(JLabel label) {
         this.label = label;
+    }
+    
+    public boolean getSelected() {
+        return selected;
+    }
+    
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
     
     public void setDatos(Route ruta) {

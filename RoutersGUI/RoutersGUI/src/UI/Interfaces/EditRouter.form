@@ -85,7 +85,7 @@
                                                   <Component id="jLabel1" alignment="1" max="32767" attributes="0"/>
                                                   <Component id="jLabel6" alignment="1" max="32767" attributes="0"/>
                                               </Group>
-                                              <EmptySpace max="32767" attributes="0"/>
+                                              <EmptySpace type="separate" pref="840" max="32767" attributes="0"/>
                                               <Component id="invalid1" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                               <Component id="addButton" min="-2" pref="30" max="-2" attributes="0"/>
@@ -242,12 +242,14 @@
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="5" rowCount="0">
+                          <Table columnCount="7" rowCount="0">
+                            <Column editable="false" title="ID" type="java.lang.Object"/>
                             <Column editable="false" title="Destino" type="java.lang.Object"/>
+                            <Column editable="false" title="IP" type="java.lang.Object"/>
                             <Column editable="false" title="M&#xe1;scara" type="java.lang.Object"/>
-                            <Column editable="false" title="Gateway" type="java.lang.Object"/>
-                            <Column editable="false" title="Interfaz" type="java.lang.Object"/>
+                            <Column editable="false" title="Saltos" type="java.lang.Object"/>
                             <Column editable="false" title="M&#xe9;trica" type="java.lang.Object"/>
+                            <Column editable="true" title="" type="java.lang.Object"/>
                           </Table>
                         </Property>
                       </Properties>

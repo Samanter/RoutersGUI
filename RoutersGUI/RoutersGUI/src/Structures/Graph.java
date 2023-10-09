@@ -16,7 +16,7 @@ public class Graph {
         adj = new ArrayList<>();
         
         for (int i = 0; i < V; i++) {
-            adj.add(new ArrayList<>());
+            adj.add(new ArrayList());
         }
     }
  
@@ -25,22 +25,6 @@ public class Graph {
         adj.get(v).add(new iPair(u, w));
     }
     
-    public void blockEdge(int u, int v) {
-        for (iPair edge : adj.get(u)) {
-            if (edge.first == v) {
-                adj.get(u).remove(edge);
-                break;
-            }
-        }
-
-        for (iPair edge : adj.get(v)) {
-            if (edge.first == u) {
-                adj.get(v).remove(edge);
-                break;
-            }
-        }
-    }
- 
     public PathInfo shortestPath(int src, int dest) {
         PriorityQueue<iPair> pq = new PriorityQueue<>(V, Comparator.comparingInt(o -> o.first));
         int[] dist = new int[V];
@@ -77,27 +61,14 @@ public class Graph {
         return new PathInfo(dist[dest], path);
     }
     
-    public ArrayList<PathInfo> findThreeShortestPaths(int src, int dest) {
-        ArrayList<PathInfo> shortestPaths = new ArrayList();
-        for (int i = 0; i < 3; i++) {
-            PathInfo shortestPath = shortestPath(src, dest);
-            
-            if (shortestPath.getDistance() == Integer.MAX_VALUE) {
-                break;
-            }
-            
-            shortestPaths.add(shortestPath);
-            ArrayList<Integer> path = shortestPath.getPath();
-            
-            for (int j = 0; j < path.size() - 1; j++) {
-                int u = path.get(j);
-                int v = path.get(j + 1);
-                
-                blockEdge(u, v);
-                blockEdge(v, u);
-            }
-        }
+    public ArrayList<PathInfo> shortestPaths(int src) {
+        ArrayList<PathInfo> paths = new ArrayList();
         
-        return shortestPaths;
+        for (int dest = 0; dest < V; dest++) {
+            if (src == dest) paths.add(null);
+            else paths.add(shortestPath(src, dest));
+        }
+
+        return paths;
     }
 }

@@ -9,6 +9,10 @@ public class RoutersList {
         routers = new ArrayList();
     }
     
+    public RoutersList(RoutersList rl) {
+        routers = (ArrayList<Router>) rl.getList().clone();
+    }
+    
     public int size() {
         return routers.size();
     }

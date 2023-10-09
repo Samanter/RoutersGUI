@@ -1,9 +1,9 @@
 package UI.Interfaces;
 
 import UI.Warnings.RouterWarning;
-import Structures.PathInfo;
 import System.*;
 import UI.Misc.ScrollBar;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -298,80 +298,6 @@ public class Main extends javax.swing.JFrame {
         
         mainArea.repaint();
     }
-
-    public static void stuff() {
-        Functions f = new Functions();
-        
-        Router router1 = new Router(1, "Router 1", "Model 1");
-        Router router2 = new Router(2, "Router 2", "Model 2");
-        Router router3 = new Router(3, "Router 3", "Model 3");
-        Router router4 = new Router(4, "Router 4", "Model 4");
-        Router router5 = new Router(5, "Router 5", "Model 5");
-        Router router6 = new Router(6, "Router 6", "Model 6");
-        Router router7 = new Router(7, "Router 7", "Model 7");
-        Router router8 = new Router(8, "Router 8", "Model 8");
-        Router router9 = new Router(9, "Router 9", "Model 9");
-        Router router10 = new Router(10, "Router 10", "Model 10");
-        
-        f.addRouter(router1);
-        f.addRouter(router2);
-        f.addRouter(router3);
-        f.addRouter(router4);
-        f.addRouter(router5);
-        f.addRouter(router6);
-        f.addRouter(router7);
-        f.addRouter(router8);
-        f.addRouter(router9);
-        f.addRouter(router10);
-
-        f.addRuta(new Route("Route1", router1, router2, "192.168.1.1", "255.255.255.0", "192.168.2.1", "255.255.255.0", 10, 1, 2, "eth0"));
-        f.addRuta(new Route("Route2", router2, router3, "192.168.2.1", "255.255.255.0", "192.168.3.1", "255.255.255.0", 15, 2, 3, "eth1"));
-        f.addRuta(new Route("Route3", router1, router4, "192.168.1.2", "255.255.255.0", "192.168.4.1", "255.255.255.0", 12, 1, 4, "eth2"));
-        f.addRuta(new Route("Route4", router3, router5, "192.168.3.2", "255.255.255.0", "192.168.5.1", "255.255.255.0", 20, 3, 5, "eth3"));
-        f.addRuta(new Route("Route5", router4, router6, "192.168.4.2", "255.255.255.0", "192.168.6.1", "255.255.255.0", 18, 4, 6, "eth4"));
-        
-        int[][] adjacencyMatrix = f.adyacencyMatrix();
-        
-        System.out.println("Adjacency Matrix:");
-        
-        for (int[] adjacencyMatrix1 : adjacencyMatrix) {
-            for (int j = 0; j < adjacencyMatrix1.length; j++) {
-                System.out.print(adjacencyMatrix1[j] + "\t");
-            }
-            System.out.println();
-        }
-        
-        System.out.println("\nNeighbors of Each Router:");
-        
-        for (Router router : f.getRouters().getList()) {
-            System.out.print("Router " + router.getId() + " neighbors: ");
-            
-            ArrayList<Router> neighbors = f.neighbors(router);
-            
-            for (int i = 0; i < neighbors.size(); i++) {
-                System.out.print(neighbors.get(i).getNombre() + " ");
-            }
-            
-            System.out.println();
-        }
-        
-        Router source_router = f.getRouter(1);
-        Router dest_router = f.getRouter(5);
-        PathInfo path = f.findPaths(source_router, dest_router);
-        
-        System.out.printf("""
-                          Dijkstra's Shortest Path:
-                          Source: %s
-                          Destination: %s
-                          Cost: %d
-                          
-                          """, source_router.getId(), dest_router.getId(), path.getDistance());
-        
-        for (int i = 0; i < path.getPath().size(); i++) {
-            System.out.print(" -> " + f.getRouters().getList().get(path.getPath().get(i)).getId());
-        }
-        System.out.println();
-    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -385,9 +311,17 @@ public class Main extends javax.swing.JFrame {
 
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(Color.GRAY);
 
                 for (Route route : functions.getRutas().getList()) {
+                    if (route.getSelected()) {
+                        g2.setColor(new Color(40, 130, 0, 255));
+                        g2.setStroke(new BasicStroke(2.0f));
+                    }
+                    else {
+                        g2.setColor(Color.GRAY);
+                        g2.setStroke(new BasicStroke(1.0f));
+                    }
+
                     g2.draw(route.getConnection());
                 }
             }

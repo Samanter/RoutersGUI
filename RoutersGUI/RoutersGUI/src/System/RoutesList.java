@@ -9,6 +9,10 @@ public class RoutesList {
         rutas = new ArrayList();
     }
     
+    public RoutesList(RoutesList rl) {
+        rutas = (ArrayList<Route>) rl.getList().clone();
+    }
+    
     public int size() {
         return rutas.size();
     }

@@ -1,11 +1,16 @@
 package UI.Interfaces;
 
+import Structures.PathInfo;
+import System.Functions;
 import System.Route;
 import System.Router;
 import UI.Misc.ScrollBar;
 import UI.Table.TableActionCellEditor;
 import UI.Table.TableActionCellRender;
 import UI.Table.TableActionEvent;
+import UI.Table.TableViewCellEditor;
+import UI.Table.TableViewCellRender;
+import UI.Table.TableViewEvent;
 import UI.Warnings.CancelWarning;
 import UI.Warnings.RouteWarning;
 import java.awt.Color;
@@ -23,6 +28,7 @@ public class EditRouter extends javax.swing.JFrame {
     private ArrayList<Route> deleted_routes;
     private ArrayList<Boolean> is_new;
     private ArrayList<Integer> pos_list;
+    private Functions temp_functions;
     
     public EditRouter() {
         initComponents();
@@ -86,7 +92,11 @@ public class EditRouter extends javax.swing.JFrame {
                     @Override
                     public void addRoute() {
                         table1.updateRow(row, setTable());
-                        table_routes.get(row).setDatos(getRoute());
+                        Route aux = getRoute();
+                        table_routes.set(row, aux);
+                        
+                        temp_functions.editRuta(getRoute());
+                        routingTable(main_frame.getSelectedRouter());
                     }
                 };
 
@@ -104,7 +114,10 @@ public class EditRouter extends javax.swing.JFrame {
                     if (!is_new.get(row)) {
                         deleted_routes.add(table_routes.get(row));
                     }
-
+                    
+                    temp_functions.removeRuta(table_routes.get(row));
+                    routingTable(main_frame.getSelectedRouter());
+                    
                     table_routes.remove(row);
                     table1.removeRow(row);
                     
@@ -130,10 +143,34 @@ public class EditRouter extends javax.swing.JFrame {
         
         table1.getColumnModel().getColumn(8).setCellRenderer(new TableActionCellRender());
         table1.getColumnModel().getColumn(8).setCellEditor(new TableActionCellEditor(event_route));
+        
+        TableViewEvent event_routingTable = (int row) -> {
+            ShortestPaths frame = new ShortestPaths() {
+                @Override
+                public void close() {
+                    EditRouter.this.setEnabled(true);
+                    dispose();
+                }
+            };
+            
+            frame.setFunctions(temp_functions);
+            frame.setRouters(main_frame.getSelectedRouter(), temp_functions.getRouter((int) table2.getValueAt(row, 0)));
+            frame.initData();
+            frame.setVisible(true);
+            setEnabled(false);
+        };
+        
+        table2.getColumnModel().getColumn(0).setMinWidth(0);
+        table2.getColumnModel().getColumn(0).setMaxWidth(0);
+        table2.getColumnModel().getColumn(6).setPreferredWidth(20);
+        
+        table2.getColumnModel().getColumn(6).setCellRenderer(new TableViewCellRender());
+        table2.getColumnModel().getColumn(6).setCellEditor(new TableViewCellEditor(event_routingTable));
     }
     
     public void setMainFrame(Main main_frame) {
         this.main_frame = main_frame;
+        temp_functions = new Functions(main_frame.getFunctions());
     }
     
     public String getRouterName() {
@@ -167,6 +204,47 @@ public class EditRouter extends javax.swing.JFrame {
             }
             else if (route.getRouter_b() == main_frame.getSelectedRouter())  {
                 table1.addRow(routeObject(1, route));
+            }
+        }
+        
+        routingTable(main_frame.getSelectedRouter());
+    }
+    
+    public void routingTable(Router router) {
+        ArrayList<PathInfo> paths = temp_functions.findPaths(main_frame.getSelectedRouter());
+        table2.clearTable();
+        
+        for (PathInfo path_info : paths) {
+            if (path_info != null && path_info.getPath().size() > 1) {
+                String d1, d2, d3;
+                int d0, d4, d5;
+                
+                Router r1 = temp_functions.getRouter(path_info.getPath().get(path_info.getPath().size() - 2));
+                Router r2 = temp_functions.getRouter(path_info.getPath().get(path_info.getPath().size() - 1));
+                
+                d0 = r2.getId();
+                d1 = r2.getNombre();
+                
+                String aux1 = r1.getId() + "-" + r2.getId();
+                String aux2 = r2.getId() + "-" + r1.getId();
+                
+                Route route = temp_functions.getRuta(aux1);
+                
+                if (route != null) {
+                    d2 = route.getIp_b();
+                    d3 = route.getMask_b();
+                }
+                else {
+                    route = temp_functions.getRuta(aux2);
+                    d2 = route.getIp_a();
+                    d3 = route.getMask_a();
+                }
+                
+                d4 = path_info.getPath().size() - 1;
+                d5 = path_info.getDistance();
+
+                Object[] data = new Object[] { d0, d1, d2, d3, d4, d5, "" };
+                table2.addRow(data);
             }
         }
     }
@@ -303,11 +381,11 @@ public class EditRouter extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Destino", "Máscara", "Gateway", "Interfaz", "Métrica"
+                "ID", "Destino", "IP", "Máscara", "Saltos", "Métrica", ""
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -424,7 +502,7 @@ public class EditRouter extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(18, 840, Short.MAX_VALUE)
                                     .addComponent(invalid1)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -529,6 +607,9 @@ public class EditRouter extends javax.swing.JFrame {
                     table1.addRow(setTable());
                     table_routes.add(getRoute());
                     is_new.add(true);
+                    
+                    temp_functions.addRuta(getRoute());
+                    routingTable(main_frame.getSelectedRouter());
                 }
             };
 

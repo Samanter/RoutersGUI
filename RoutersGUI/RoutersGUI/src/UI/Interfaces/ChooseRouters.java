@@ -217,9 +217,10 @@ public class ChooseRouters extends javax.swing.JFrame {
             };
             
             frame.setMainFrame(main_frame);
+            frame.setFunctions(main_frame.getFunctions());
             frame.setRouters(getRouter1(), getRouter2());
-            frame.initData();
-            frame.setVisible(true);
+            
+            if (frame.initData() == 0) frame.setVisible(true);
             dispose();
         }
     }//GEN-LAST:event_customButton2ActionPerformed

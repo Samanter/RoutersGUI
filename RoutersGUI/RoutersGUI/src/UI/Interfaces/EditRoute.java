@@ -114,13 +114,24 @@ public class EditRoute extends javax.swing.JFrame {
     }
     
     public void setRoute() {
-        route.setRouter_a(main_frame.getSelectedRouter());
-        route.setRouter_b((Router) router_b.getSelectedItem());
+        if (pos == 0) {
+            route.setRouter_a(main_frame.getSelectedRouter());
+            route.setRouter_b((Router) router_b.getSelectedItem());
+            route.setIp_a(ip_a.getText());
+            route.setIp_b(ip_b.getText());
+            route.setMask_a(mask_a.getText());
+            route.setMask_b(mask_b.getText());
+        }
+        else {
+            route.setRouter_a((Router) router_b.getSelectedItem());
+            route.setRouter_b(main_frame.getSelectedRouter());
+            route.setIp_a(ip_b.getText());
+            route.setIp_b(ip_a.getText());
+            route.setMask_a(mask_b.getText());
+            route.setMask_b(mask_a.getText());
+        }
+        
         route.setId(route.getRouter_a().getId() + "-" + route.getRouter_b().getId());
-        route.setIp_a(ip_a.getText());
-        route.setIp_b(ip_b.getText());
-        route.setMask_a(mask_a.getText());
-        route.setMask_b(mask_b.getText());
         route.setInterfaz((String) interfaz.getSelectedItem());
         route.setB_interfaz(Integer.valueOf(b_interfaz.getText()));
         route.setB_referencia(Integer.valueOf(b_ref.getText()));
@@ -131,12 +142,12 @@ public class EditRoute extends javax.swing.JFrame {
         Object[] data;
         
         if (pos == 0) {
-            data = new Object[] { route.getId(), ip_a.getText(), route.getRouter_b().getNombre(),
-            ip_b.getText(), b_ref.getText(), b_interfaz.getText(), route.getInterfaz(), route.getCosto(), "" };
+            data = new Object[] { route.getId(), route.getIp_a(), route.getRouter_b().getNombre(),
+            route.getIp_b(), route.getB_referencia(), route.getB_interfaz(), route.getInterfaz(), route.getCosto(), "" };
         }
         else {
-            data = new Object[] { route.getId(), ip_b.getText(), route.getRouter_a().getNombre(),
-            ip_a.getText(), b_ref.getText(), b_interfaz.getText(), route.getInterfaz(), route.getCosto(), "" };
+            data = new Object[] { route.getId(), route.getIp_b(), route.getRouter_a().getNombre(),
+            route.getIp_a(), route.getB_referencia(), route.getB_interfaz(), route.getInterfaz(), route.getCosto(), "" };
         }
         
         return data;
@@ -181,7 +192,7 @@ public class EditRoute extends javax.swing.JFrame {
         return !(invalid1.isVisible() || invalid2.isVisible() || invalid3.isVisible() ||
                 invalid4.isVisible() || invalid5.isVisible() || invalid6.isVisible());
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

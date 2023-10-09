@@ -13,6 +13,11 @@ public class Functions {
         rutas = new RoutesList();
     }
     
+    public Functions(Functions f) {
+        routers = new RoutersList(f.getRouters());
+        rutas = new RoutesList(f.getRutas());
+    }
+    
     public RoutersList getRouters() {
         return routers;
     }
@@ -88,7 +93,22 @@ public class Functions {
         return ady;
     }
     
-    public PathInfo findPaths(Router router_a, Router router_b) {
+    public ArrayList<PathInfo> findPaths(Router router) {
+        int n = routers.size();
+        Graph g = new Graph(n);
+        
+        for (int i = 0; i < rutas.size(); i++) {
+            g.addEdge(
+                    rutas.getList().get(i).getRouter_a().getListId(), 
+                    rutas.getList().get(i).getRouter_b().getListId(), 
+                    rutas.getList().get(i).getCosto()
+            );
+        }
+        
+        return g.shortestPaths(router.getId());
+    }
+    
+    public PathInfo findPath(Router router_a, Router router_b) {
         int n = routers.size();
         Graph g = new Graph(n);
         
@@ -101,20 +121,5 @@ public class Functions {
         }
 
         return g.shortestPath(router_a.getListId(), router_b.getListId());
-    }
-    
-    public ArrayList<PathInfo> findThreeShortestPaths(Router router_a, Router router_b) {
-        int n = routers.size();
-        Graph g = new Graph(n);
-
-        for (int i = 0; i < rutas.size(); i++) {
-            g.addEdge(
-                rutas.getList().get(i).getRouter_a().getListId(),
-                rutas.getList().get(i).getRouter_b().getListId(),
-                rutas.getList().get(i).getCosto()
-            );
-        }
-
-        return g.findThreeShortestPaths(router_a.getListId(), router_b.getListId());
     }
 }
