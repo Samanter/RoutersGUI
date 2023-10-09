@@ -1,8 +1,9 @@
 package System;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RoutesList {
+public class RoutesList implements Serializable {
     private ArrayList<Route> rutas;
     
     public RoutesList() {
@@ -36,5 +37,9 @@ public class RoutesList {
     public void editRuta(Route ruta) {
         Route aux = getRuta(ruta.getId());
         aux.setDatos(ruta);
+    }
+    
+    public void loadRuta(Route ruta) {
+        getRuta(ruta.getId()).loadDatos(ruta);
     }
 }

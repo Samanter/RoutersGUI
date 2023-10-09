@@ -1,8 +1,9 @@
 package System;
 
 import UI.Misc.RouterPanel;
+import java.io.Serializable;
 
-public class Router {
+public class Router implements Serializable {
     private int id;
     private String nombre;
     private String modelo;
@@ -61,6 +62,14 @@ public class Router {
         this.nombre = nombre;
         this.modelo = modelo;
         panel.setRouterName(nombre);
+    }
+    
+    public void loadDatos(Router router) {
+        this.id = router.getId();
+        this.nombre = router.getNombre();
+        this.modelo = router.getModelo();
+        this.list_id = router.getListId();
+        this.panel = router.getPanel();
     }
     
     @Override

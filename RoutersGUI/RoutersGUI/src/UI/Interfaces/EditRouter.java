@@ -162,7 +162,7 @@ public class EditRouter extends javax.swing.JFrame {
         
         table2.getColumnModel().getColumn(0).setMinWidth(0);
         table2.getColumnModel().getColumn(0).setMaxWidth(0);
-        table2.getColumnModel().getColumn(6).setPreferredWidth(20);
+        table2.getColumnModel().getColumn(6).setPreferredWidth(10);
         
         table2.getColumnModel().getColumn(6).setCellRenderer(new TableViewCellRender());
         table2.getColumnModel().getColumn(6).setCellEditor(new TableViewCellEditor(event_routingTable));
@@ -281,6 +281,7 @@ public class EditRouter extends javax.swing.JFrame {
 
     public void updateRoutes() {
         for (Route route : deleted_routes) {
+            main_frame.getFunctions().getRuta(route.getId()).setLabelText("");
             main_frame.getFunctions().removeRuta(route);
         }
         

@@ -1,8 +1,9 @@
 package System;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RoutersList {
+public class RoutersList implements Serializable {
     private ArrayList<Router> routers;
     
     public RoutersList() {
@@ -42,5 +43,9 @@ public class RoutersList {
     public void editRouter(Router router) {
         Router aux = getRouter(router.getId());
         aux.setDatos(router.getNombre(), router.getModelo());
+    }
+    
+    public void loadRouter(Router router) {
+        getRouter(router.getId()).loadDatos(router);
     }
 }

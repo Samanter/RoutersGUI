@@ -36,18 +36,7 @@ public class Table extends JTable {
                 Component com = super.getTableCellRendererComponent(jtable, o, selected, bln1, i, i1);
                 setBorder(noFocusBorder);
                 
-                if (isNumericValue(o) && i1 != 0) {
-                    setHorizontalAlignment(SwingConstants.RIGHT);
-                }
-                else {
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                }
-                
-                if (o instanceof Double double_value) {
-                    String formattedValue = decimalFormat.format(double_value);
-                    setText("S/ " + formattedValue);
-                    setFont(boldFont);
-                }
+                setHorizontalAlignment(SwingConstants.CENTER);
                 
                 if (selected) {
                     com.setForeground(new Color(15, 89, 140));
@@ -59,10 +48,6 @@ public class Table extends JTable {
                 }
                 
                 return com;
-            }
-            
-            private boolean isNumericValue(Object o) {
-                return o instanceof Number;
             }
         });
     }

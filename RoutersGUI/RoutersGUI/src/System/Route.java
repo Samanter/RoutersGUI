@@ -3,9 +3,10 @@ package System;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Line2D;
+import java.io.Serializable;
 import javax.swing.JLabel;
 
-public class Route {
+public class Route implements Serializable {
     private String id;
     private Router router_a;
     private Router router_b;
@@ -137,6 +138,10 @@ public class Route {
         this.label = label;
     }
     
+    public void setLabelText(String text) {
+        label.setText(text);
+    }
+    
     public boolean getSelected() {
         return selected;
     }
@@ -155,5 +160,21 @@ public class Route {
         this.interfaz = ruta.getInterfaz();
         
         label.setText("Costo: " + costo + " / " + interfaz);
+    }
+    
+    public void loadDatos(Route ruta) {
+        this.id = ruta.getId();
+        this.router_a = ruta.getRouter_a();
+        this.router_b = ruta.getRouter_b();
+        this.ip_a = ruta.getIp_a();
+        this.ip_b = ruta.getIp_b();
+        this.mask_a = ruta.getMask_a();
+        this.mask_b = ruta.getMask_b();
+        this.costo = ruta.getCosto();
+        this.b_referencia = ruta.getB_referencia();
+        this.b_interfaz = ruta.getB_interfaz();
+        this.interfaz = ruta.getInterfaz();
+        this.label = ruta.getLabel();
+        this.selected = ruta.getSelected();
     }
 }

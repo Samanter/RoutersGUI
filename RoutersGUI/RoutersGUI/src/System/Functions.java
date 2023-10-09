@@ -2,20 +2,37 @@ package System;
 
 import Structures.Graph;
 import Structures.PathInfo;
+import UI.Misc.SerializablePriorityQueue;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import javax.swing.JFileChooser;
 
-public class Functions {
+public class Functions implements Serializable {
     private final RoutersList routers;
     private final RoutesList rutas;
+    private final SerializablePriorityQueue ids;
     
     public Functions() {
         routers = new RoutersList();
         rutas = new RoutesList();
+        ids = new SerializablePriorityQueue();
     }
     
     public Functions(Functions f) {
         routers = new RoutersList(f.getRouters());
         rutas = new RoutesList(f.getRutas());
+        ids = new SerializablePriorityQueue();
+    }
+    
+    public PriorityQueue<Integer> getIds() {
+        return ids;
     }
     
     public RoutersList getRouters() {
@@ -121,5 +138,48 @@ public class Functions {
         }
 
         return g.shortestPath(router_a.getListId(), router_b.getListId());
+    }
+    
+    public void saveToFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showSaveDialog(null);
+        
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(selectedFile))) {
+                oos.writeObject(this);
+                System.out.println("Functions saved successfully.");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public static Functions loadFromFile() {
+        Functions functions = null;
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(null);
+        
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(selectedFile))) {
+                functions = (Functions) ois.readObject();
+                System.out.println("Functions loaded successfully.");
+            } 
+            catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return functions;
+    }
+    
+    public void loadRouter(Router router) {
+        routers.loadRouter(router);
+    }
+    
+    public void loadRuta(Route ruta) {
+        rutas.loadRuta(ruta);
     }
 }
