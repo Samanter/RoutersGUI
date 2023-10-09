@@ -199,10 +199,10 @@ public class EditRouter extends javax.swing.JFrame {
         idLabel.setText(((Integer) main_frame.getSelectedRouter().getId()).toString());
         
         for (Route route : main_frame.getFunctions().getRutas().getList()) {
-            if (route.getRouter_a() == main_frame.getSelectedRouter()) {
+            if (route.getRouter_a().getId() == main_frame.getSelectedRouter().getId()) {
                 table1.addRow(routeObject(0, route));
             }
-            else if (route.getRouter_b() == main_frame.getSelectedRouter())  {
+            else if (route.getRouter_b().getId() == main_frame.getSelectedRouter().getId())  {
                 table1.addRow(routeObject(1, route));
             }
         }

@@ -2,7 +2,9 @@ package UI.Interfaces;
 
 import UI.Warnings.RouterWarning;
 import System.*;
+import UI.Misc.LoadFunctionsData;
 import UI.Misc.ScrollBar;
+import UI.Warnings.SaveBeforeClosing;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -13,7 +15,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -23,10 +28,45 @@ import javax.swing.SwingUtilities;
 public class Main extends javax.swing.JFrame {    
     private Functions functions;
     private Router selected_router = null;
-    private final JPopupMenu popup_menu;
+    private JPopupMenu popup_menu;
+    private String file_path;
     
     public Main() {
         initComponents();
+        
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                SaveBeforeClosing frame = new SaveBeforeClosing() {
+                    @Override
+                    public void close() {
+                        Main.this.setEnabled(true);
+                        dispose();
+                    }
+                };
+        
+                frame.getYes().addActionListener((ActionEvent e1) -> {
+                    saveFilePath();
+                    frame.dispose();
+                    dispose();
+                });
+                
+                frame.getNo().addActionListener((ActionEvent e1) -> {
+                    frame.dispose();
+                    dispose();
+                });
+
+                frame.getVolver().addActionListener((ActionEvent e1) -> {
+                    setEnabled(true);
+                    frame.dispose();
+                });
+
+                setEnabled(false);
+                frame.setVisible(true);
+            }
+        });
         
         scrollPane.setVerticalScrollBar(new ScrollBar());
         scrollPane.getVerticalScrollBar().setBackground(new Color(220, 220, 220, 255));
@@ -41,6 +81,7 @@ public class Main extends javax.swing.JFrame {
         scrollPane.setCorner(JScrollPane.LOWER_RIGHT_CORNER, p);
         
         functions = new Functions();
+        file_path = null;
         
         popup_menu = new JPopupMenu();
         JMenuItem edit = new JMenuItem("Editar");
@@ -123,30 +164,123 @@ public class Main extends javax.swing.JFrame {
         menuBar.getMenu("new_file").addMouseListener(new MouseAdapter () {
             @Override
             public void mouseClicked(MouseEvent e) {
-                functions = new Functions();
-                mainArea.removeAll();
-                mainArea.repaint();
+                SaveBeforeClosing frame = new SaveBeforeClosing() {
+                    @Override
+                    public void close() {
+                        Main.this.setEnabled(true);
+                        dispose();
+                    }
+                };
+        
+                frame.getYes().addActionListener((ActionEvent e1) -> {
+                    saveFilePath();
+                    
+                    functions = new Functions();
+                    file_path = null;
+                    mainArea.removeAll();
+                    mainArea.add(popup_menu);
+                    mainArea.repaint();
+                    
+                    setEnabled(true);
+                    frame.dispose();
+                });
+                
+                frame.getNo().addActionListener((ActionEvent e1) -> {
+                    functions = new Functions();
+                    file_path = null;
+                    mainArea.removeAll();
+                    mainArea.add(popup_menu);
+                    mainArea.repaint();
+                    
+                    setEnabled(true);
+                    frame.dispose();
+                });
+
+                frame.getVolver().addActionListener((ActionEvent e1) -> {
+                    setEnabled(true);
+                    frame.dispose();
+                });
+
+                setEnabled(false);
+                frame.setVisible(true);
             }
         });
         
         menuBar.getMenu("open_file").addMouseListener(new MouseAdapter () {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Functions loaded_functions = Functions.loadFromFile();
+                SaveBeforeClosing frame = new SaveBeforeClosing() {
+                    @Override
+                    public void close() {
+                        Main.this.setEnabled(true);
+                        dispose();
+                    }
+                };
+        
+                frame.getYes().addActionListener((ActionEvent e1) -> {
+                    saveFilePath();
+                    
+                    LoadFunctionsData loaded_functions_data = Functions.loadFromFile();
                 
-                if (loaded_functions != null) {
-                    functions = loaded_functions;
-                    selected_router = null;
-                    mainArea.removeAll();
-                    loadData();
-                }
+                    if (loaded_functions_data != null) {
+                        Functions loaded_functions = loaded_functions_data.getFunctions();
+                        file_path = loaded_functions_data.getFilePath();
+                        System.out.println(file_path);
+                        functions = loaded_functions;
+                        selected_router = null;
+                        mainArea.removeAll();
+                        mainArea.add(popup_menu);
+                        loadData();
+                    }
+                    
+                    setEnabled(true);
+                    frame.dispose();
+                });
+                
+                frame.getNo().addActionListener((ActionEvent e1) -> {
+                    LoadFunctionsData loaded_functions_data = Functions.loadFromFile();
+                
+                    if (loaded_functions_data != null) {
+                        Functions loaded_functions = loaded_functions_data.getFunctions();
+                        file_path = loaded_functions_data.getFilePath();
+                        System.out.println(file_path);
+                        functions = loaded_functions;
+                        selected_router = null;
+                        mainArea.removeAll();
+                        mainArea.add(popup_menu);
+                        loadData();
+                    }
+                    
+                    setEnabled(true);
+                    frame.dispose();
+                });
+
+                frame.getVolver().addActionListener((ActionEvent e1) -> {
+                    setEnabled(true);
+                    frame.dispose();
+                });
+
+                setEnabled(false);
+                frame.setVisible(true);
             }
         });
         
         menuBar.getMenu("save_file").addMouseListener(new MouseAdapter () {
             @Override
             public void mouseClicked(MouseEvent e) {
-                functions.saveToFile();
+                if (file_path == null) {
+                    file_path = functions.saveToFile();
+                }
+                else {
+                    functions.saveToFile(file_path);
+                }
+            }
+        });
+        
+        menuBar.getMenu("save_file_as").addMouseListener(new MouseAdapter () {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                file_path = functions.saveToFile();
             }
         });
         
@@ -224,9 +358,17 @@ public class Main extends javax.swing.JFrame {
         return selected_router;
     }
     
+    public void saveFilePath() {
+        if (file_path == null) {
+            file_path = functions.saveToFile();
+        }
+        else {
+            functions.saveToFile(file_path);
+        }
+    }
+    
     public void loadData() {
         for (Router router : functions.getRouters().getList()) {
-            router.getPanel().loadPos();
             loadRouter(router);
         }
         
@@ -239,6 +381,7 @@ public class Main extends javax.swing.JFrame {
     
     public void loadRouter(Router router) {
         Router aux = new Router(router.getId(), router.getNombre(), router.getModelo());
+        aux.setListId(router.getListId());
         aux.getPanel().setBounds(router.getPanel().getX(), router.getPanel().getY(), 108, 91);
         
         aux.getPanel().addMouseListener(new MouseAdapter() {
@@ -273,8 +416,8 @@ public class Main extends javax.swing.JFrame {
         Route aux = new Route();
         
         aux.setId(route.getId());
-        aux.setRouter_a(route.getRouter_a());
-        aux.setRouter_b(route.getRouter_b());
+        aux.setRouter_a(functions.getRouter(route.getRouter_a().getId()));
+        aux.setRouter_b(functions.getRouter(route.getRouter_b().getId()));
         aux.setIp_a(route.getIp_a());
         aux.setIp_b(route.getIp_b());
         aux.setMask_a(route.getMask_a());
@@ -342,11 +485,12 @@ public class Main extends javax.swing.JFrame {
     }
     
     public void deleteSelectedRouter() {
-        ArrayList<Route> aux = new ArrayList();
-        
         if (selected_router != null) {
+            ArrayList<Route> aux = new ArrayList();
+            
             for (Route route : functions.getRutas().getList()) {
-                if (route.getRouter_a() == selected_router || route.getRouter_b() == selected_router) {
+                if (route.getRouter_a().getId() == selected_router.getId() || 
+                        route.getRouter_b().getId() == selected_router.getId()) {
                     mainArea.remove(route.getLabel());
                     setRouteConnections();
                     aux.add(route);

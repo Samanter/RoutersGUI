@@ -18,15 +18,10 @@ public class RouterPanel extends JPanel implements Serializable {
     private boolean selected = false;
     private final JLabel name;
     private final JLabel img;
-    private int x;
-    private int y;
     
     public RouterPanel(String text) {
         setOpaque(false);
-        
-        x = 20;
-        y = 20;
-        
+
         img = new JLabel(new ImageIcon(getClass().getResource("/Icons/router.png")));
         img.setHorizontalAlignment(JLabel.CENTER);
         
@@ -60,7 +55,6 @@ public class RouterPanel extends JPanel implements Serializable {
                     int x = getX() + e.getPoint().x - mouse_pos.x;
                     int y = getY() + e.getPoint().y - mouse_pos.y;
                     setLocation(x, y);
-                    setPos(x, y);
                 }
             }
         });
@@ -91,22 +85,5 @@ public class RouterPanel extends JPanel implements Serializable {
     
     public void setNameVisible(boolean flag) {
         name.setVisible(flag);
-    }
-    
-    public void loadPos() {
-        setLocation(x, y);
-    }
-    
-    public void setPos(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    
-    public int getXPos() {
-        return x;
-    }
-    
-    public int getYPos() {
-        return y;
     }
 }

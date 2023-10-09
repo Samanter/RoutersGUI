@@ -3,9 +3,7 @@ package UI.Misc;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
@@ -16,11 +14,14 @@ public class MenuBar extends JMenuBar {
         Menu new_file = new Menu("new_file", new javax.swing.ImageIcon(getClass().getResource("/Icons/new_file.png")));
         Menu open_file = new Menu("open_file", new javax.swing.ImageIcon(getClass().getResource("/Icons/open_file.png")));
         Menu save_file = new Menu("save_file", new javax.swing.ImageIcon(getClass().getResource("/Icons/save_file.png")));
+        Menu save_file_as = new Menu("save_file_as", new javax.swing.ImageIcon(getClass().getResource("/Icons/save_file.png")));
         Menu add_router = new Menu("add_router", new javax.swing.ImageIcon(getClass().getResource("/Icons/add_router.png")));
         Menu find_paths = new Menu("find_paths", new javax.swing.ImageIcon(getClass().getResource("/Icons/find_paths.png")));
         Menu show_all = new Menu("show_all", new javax.swing.ImageIcon(getClass().getResource("/Icons/show_all.png")));
         Menu hide_all = new Menu("hide_all", new javax.swing.ImageIcon(getClass().getResource("/Icons/hide_all.png")));
         Menu help = new Menu("help", new javax.swing.ImageIcon(getClass().getResource("/Icons/help.png")));
+        
+        save_file_as.setText("Guardar como");
         
         JSeparator separator1 = new JSeparator(SwingConstants.VERTICAL);
         separator1.setPreferredSize(new java.awt.Dimension(5, 20));
@@ -31,6 +32,7 @@ public class MenuBar extends JMenuBar {
         add(new_file);
         add(open_file);
         add(save_file);
+        add(save_file_as);
         add(separator1);
         add(add_router);
         add(find_paths);

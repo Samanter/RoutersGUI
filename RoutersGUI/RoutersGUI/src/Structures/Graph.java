@@ -21,7 +21,7 @@ public class Graph {
     }
  
     public void addEdge(int u, int v, int w) {
-        adj.get(u).add(new iPair(v, w));
+        adj.get(u).add(new iPair(v, w));    
         adj.get(v).add(new iPair(u, w));
     }
     
