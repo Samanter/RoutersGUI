@@ -135,7 +135,7 @@ public class EditRoute extends javax.swing.JFrame {
         route.setInterfaz((String) interfaz.getSelectedItem());
         route.setB_interfaz(Integer.valueOf(b_interfaz.getText()));
         route.setB_referencia(Integer.valueOf(b_ref.getText()));
-        route.setCosto(route.getB_referencia() / route.getB_interfaz());
+        route.calcCosto();
     }
     
     public Object[] setTable() {
@@ -171,6 +171,11 @@ public class EditRoute extends javax.swing.JFrame {
     public boolean hasValidValues() {
         setInvisible();
         
+        if (!isValidIPAddress(ip_a.getText())) invalid1.setVisible(true);
+        if (!isValidSubnetMask(mask_a.getText())) invalid2.setVisible(true);
+        if (!isValidIPAddress(ip_b.getText())) invalid3.setVisible(true);
+        if (!isValidSubnetMask(mask_b.getText())) invalid4.setVisible(true);
+        
         try {
             if (Integer.parseInt(b_ref.getText()) == 0) {
                 invalid5.setVisible(true);
@@ -191,6 +196,69 @@ public class EditRoute extends javax.swing.JFrame {
         
         return !(invalid1.isVisible() || invalid2.isVisible() || invalid3.isVisible() ||
                 invalid4.isVisible() || invalid5.isVisible() || invalid6.isVisible());
+    }
+    
+    public static boolean isValidIPAddress(String ip) {
+        String[] octets = ip.split("\\.");
+
+        if (octets.length != 4) return false;
+
+        try {
+            for (String octet : octets) {
+                int value = Integer.parseInt(octet);
+                if (value < 0 || value > 255) return false;
+            }
+        } 
+        catch (NumberFormatException e) {
+            return false;
+        }
+
+        return true;
+    }
+    
+    public static boolean isValidSubnetMask(String mask) {
+        String[] octets = mask.split("\\.");
+
+        if (octets.length != 4) return false;
+
+        try {
+            ArrayList<Integer> octets_num = new ArrayList();
+            
+            for (String octet : octets) {
+                int value = Integer.parseInt(octet);
+                
+                if (value != 0 && value != 128 && value != 192 && 
+                        value != 224 && value != 240 && value != 248 && 
+                        value != 252 && value != 254 && value != 255) {
+                    return false;
+                }
+                
+                octets_num.add(value);
+            }
+
+            if (octets_num.get(0) == 255) {
+                if (octets_num.get(1) == 255) {
+                    if (octets_num.get(2) != 255) {
+                        if (octets_num.get(3) != 0) return false;
+                    }
+                }
+                else {
+                    if (octets_num.get(2) != 0 || octets_num.get(3) != 0) {
+                        return false;
+                    }
+                }
+            }
+            else {
+                if (octets_num.get(1) != 0 || octets_num.get(2) != 0 || octets_num.get(3) != 0) {
+                    return false;
+                }
+            }
+        } 
+        catch (NumberFormatException e) {
+            return false;
+        }
+        
+        return true;
     }
     
     @SuppressWarnings("unchecked")
@@ -304,7 +372,7 @@ public class EditRoute extends javax.swing.JFrame {
         invalid6.setForeground(new java.awt.Color(255, 0, 0));
         invalid6.setText("INVÁLIDO");
 
-        interfaz.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FastEthernet", "Gigabit", "10Gigabit", "100Gigabit", "Serial" }));
+        interfaz.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FastEthernet", "Ethernet", "Gigabit", "Serial" }));
 
         customButton2.setForeground(new java.awt.Color(255, 255, 255));
         customButton2.setText("Guardar");

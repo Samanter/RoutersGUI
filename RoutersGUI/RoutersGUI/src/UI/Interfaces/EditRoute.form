@@ -406,12 +406,11 @@
                 <Component class="UI.Misc.ComboBoxSuggestion" name="interfaz">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="5">
+                      <StringArray count="4">
                         <StringItem index="0" value="FastEthernet"/>
-                        <StringItem index="1" value="Gigabit"/>
-                        <StringItem index="2" value="10Gigabit"/>
-                        <StringItem index="3" value="100Gigabit"/>
-                        <StringItem index="4" value="Serial"/>
+                        <StringItem index="1" value="Ethernet"/>
+                        <StringItem index="2" value="Gigabit"/>
+                        <StringItem index="3" value="Serial"/>
                       </StringArray>
                     </Property>
                   </Properties>

@@ -17,7 +17,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -34,6 +38,7 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
         
+        setTitle("OSPF Simulator");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
         addWindowListener(new WindowAdapter() {

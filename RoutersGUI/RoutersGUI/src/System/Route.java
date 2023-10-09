@@ -96,6 +96,11 @@ public class Route implements Serializable {
         this.costo = costo;
         label.setText("Costo: " + costo + " / " + interfaz);
     }
+    
+    public void calcCosto() {
+        if (b_referencia < b_interfaz) costo = 1;
+        else costo = b_referencia / b_interfaz;
+    }
 
     public Integer getB_referencia() {
         return b_referencia;
