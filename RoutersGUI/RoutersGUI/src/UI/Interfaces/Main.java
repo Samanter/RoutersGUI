@@ -344,13 +344,16 @@ public class Main extends javax.swing.JFrame {
         menuBar.getMenu("help").addMouseListener(new MouseAdapter () {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("Lista de rutas");
-                for (Route route : functions.getRutas().getList()) {
-                    System.out.println(route.getId() + " " + route.getRouter_a() + " " + 
-                            route.getIp_a() + " " + route.getMask_a() + " " + route.getRouter_b() + 
-                            " " + route.getIp_b() + " " + route.getMask_b());
-                }
-                System.out.println();
+                Help frame = new Help() {
+                    @Override
+                    public void close() {
+                        Main.this.setEnabled(true);
+                        dispose();
+                    }
+                };
+                
+                setEnabled(false);
+                frame.setVisible(true);
             }
         });
     }
