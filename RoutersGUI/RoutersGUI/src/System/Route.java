@@ -100,6 +100,7 @@ public class Route implements Serializable {
     public void calcCosto() {
         if (b_referencia < b_interfaz) costo = 1;
         else costo = b_referencia / b_interfaz;
+        label.setText("Costo: " + costo + " / " + interfaz);
     }
 
     public Integer getB_referencia() {
@@ -163,8 +164,7 @@ public class Route implements Serializable {
         this.costo = ruta.getCosto();
         this.b_interfaz = ruta.getB_interfaz();
         this.interfaz = ruta.getInterfaz();
-        
-        label.setText("Costo: " + costo + " / " + interfaz);
+        calcCosto();
     }
     
     public void loadDatos(Route ruta) {

@@ -17,11 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -31,7 +27,6 @@ import javax.swing.SwingUtilities;
 
 public class Main extends javax.swing.JFrame {    
     private Functions functions;
-    private Router selected_router = null;
     private JPopupMenu popup_menu;
     private String file_path;
     
@@ -93,7 +88,7 @@ public class Main extends javax.swing.JFrame {
         JMenuItem delete = new JMenuItem("Eliminar");
         
         edit.addActionListener((ActionEvent e) -> {
-            if (selected_router != null) {
+            if (functions.getSelectedRouter() != null) {
                 EditRouter frame = new EditRouter() {
                     @Override
                     public void close() {
@@ -103,7 +98,7 @@ public class Main extends javax.swing.JFrame {
                      
                     @Override
                     public void updateRouter() {
-                        selected_router.setDatos(getRouterName(), getModelName());
+                        functions.getSelectedRouter().setDatos(getRouterName(), getModelName());
                         setRouteConnections();
                     }
                      
@@ -115,6 +110,7 @@ public class Main extends javax.swing.JFrame {
                 };
                  
                 frame.setMainFrame(this);
+                frame.setFunctions(functions);
                 frame.initData();
                 setEnabled(false);
                 frame.setVisible(true);
@@ -122,8 +118,14 @@ public class Main extends javax.swing.JFrame {
         });
 
         delete.addActionListener((ActionEvent e) -> {
-            if (selected_router != null) {
-                RouterWarning frame = new RouterWarning();
+            if (functions.getSelectedRouter() != null) {
+                RouterWarning frame = new RouterWarning() {
+                    @Override
+                    public void close() {
+                        Main.this.setEnabled(true);
+                        dispose();
+                    }
+                };
                 
                 frame.getEliminar().addActionListener((ActionEvent e1) -> {
                     setEnabled(true);
@@ -148,7 +150,7 @@ public class Main extends javax.swing.JFrame {
         mainArea.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (selected_router != null) {
+                if (functions.getSelectedRouter() != null) {
                     boolean clicked_outside = true;
                     for (Router router : functions.getRouters().getList()) {
                         if (router.getPanel().getBounds().contains(e.getPoint())) {
@@ -158,8 +160,8 @@ public class Main extends javax.swing.JFrame {
                     }
                     
                     if (clicked_outside) {
-                        selected_router.getPanel().setSelected(false);
-                        selected_router = null;
+                        functions.getSelectedRouter().getPanel().setSelected(false);
+                        functions.setSelectedRouter(null);
                         mainArea.repaint();
                     }
                 }
@@ -230,9 +232,8 @@ public class Main extends javax.swing.JFrame {
                     if (loaded_functions_data != null) {
                         Functions loaded_functions = loaded_functions_data.getFunctions();
                         file_path = loaded_functions_data.getFilePath();
-                        System.out.println(file_path);
                         functions = loaded_functions;
-                        selected_router = null;
+                        functions.setSelectedRouter(null);
                         mainArea.removeAll();
                         mainArea.add(popup_menu);
                         loadData();
@@ -248,9 +249,8 @@ public class Main extends javax.swing.JFrame {
                     if (loaded_functions_data != null) {
                         Functions loaded_functions = loaded_functions_data.getFunctions();
                         file_path = loaded_functions_data.getFilePath();
-                        System.out.println(file_path);
                         functions = loaded_functions;
-                        selected_router = null;
+                        functions.setSelectedRouter(null);
                         mainArea.removeAll();
                         mainArea.add(popup_menu);
                         loadData();
@@ -362,10 +362,6 @@ public class Main extends javax.swing.JFrame {
         return functions;
     }
     
-    public Router getSelectedRouter() {
-        return selected_router;
-    }
-    
     public void saveFilePath() {
         if (file_path == null) {
             file_path = functions.saveToFile();
@@ -395,12 +391,12 @@ public class Main extends javax.swing.JFrame {
         aux.getPanel().addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (selected_router != null) {
-                    selected_router.getPanel().setSelected(false);
+                if (functions.getSelectedRouter() != null) {
+                    functions.getSelectedRouter().getPanel().setSelected(false);
                 }
 
                 aux.getPanel().setSelected(true);
-                selected_router = aux;
+                functions.setSelectedRouter(aux);
                 
                 if (SwingUtilities.isRightMouseButton(e)) {
                     showPopupMenu(aux.getPanel().getX() + e.getX(), aux.getPanel().getY() + e.getY(), aux);
@@ -453,12 +449,12 @@ public class Main extends javax.swing.JFrame {
         router.getPanel().addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (selected_router != null) {
-                    selected_router.getPanel().setSelected(false);
+                if (functions.getSelectedRouter() != null) {
+                    functions.getSelectedRouter().getPanel().setSelected(false);
                 }
 
                 router.getPanel().setSelected(true);
-                selected_router = router;
+                functions.setSelectedRouter(router);
                 
                 if (SwingUtilities.isRightMouseButton(e)) {
                     showPopupMenu(router.getPanel().getX() + e.getX(), router.getPanel().getY() + e.getY(), router);
@@ -479,26 +475,26 @@ public class Main extends javax.swing.JFrame {
     }
     
     public void selectRouter(Router router) {
-        if (selected_router != null) {
-            selected_router.getPanel().setSelected(false);
+        if (functions.getSelectedRouter() != null) {
+            functions.getSelectedRouter().getPanel().setSelected(false);
         }
         
-        selected_router = router;
+        functions.setSelectedRouter(router);
         
-        if (selected_router != null) {
-            selected_router.getPanel().setSelected(true);
+        if (functions.getSelectedRouter() != null) {
+            functions.getSelectedRouter().getPanel().setSelected(true);
         }
         
         mainArea.repaint();
     }
     
     public void deleteSelectedRouter() {
-        if (selected_router != null) {
+        if (functions.getSelectedRouter() != null) {
             ArrayList<Route> aux = new ArrayList();
             
             for (Route route : functions.getRutas().getList()) {
-                if (route.getRouter_a().getId() == selected_router.getId() || 
-                        route.getRouter_b().getId() == selected_router.getId()) {
+                if (route.getRouter_a().getId() == functions.getSelectedRouter().getId() || 
+                        route.getRouter_b().getId() == functions.getSelectedRouter().getId()) {
                     mainArea.remove(route.getLabel());
                     setRouteConnections();
                     aux.add(route);
@@ -507,17 +503,17 @@ public class Main extends javax.swing.JFrame {
             
             for (Route route : aux) functions.removeRuta(route);
             
-            functions.removeRouter(selected_router.getId());
-            mainArea.remove(selected_router.getPanel());
-            functions.getIds().add((selected_router.getId()));
-            selected_router = null;
+            functions.removeRouter(functions.getSelectedRouter().getId());
+            mainArea.remove(functions.getSelectedRouter().getPanel());
+            functions.getIds().add((functions.getSelectedRouter().getId()));
+            functions.setSelectedRouter(null);
             
             mainArea.repaint();
         }
     }
     
     public void showPopupMenu(int x, int y, Router router) {
-        selected_router = router;
+        functions.setSelectedRouter(router);
         router.getPanel().setSelected(true);
         popup_menu.show(this, x, y);
     }

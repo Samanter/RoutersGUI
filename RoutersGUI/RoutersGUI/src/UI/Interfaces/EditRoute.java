@@ -1,5 +1,6 @@
 package UI.Interfaces;
 
+import System.Functions;
 import System.Route;
 import System.Router;
 import UI.Misc.ScrollBar;
@@ -15,7 +16,7 @@ import javax.swing.JScrollPane;
 
 public class EditRoute extends javax.swing.JFrame {
     private final Route route;
-    private Main main_frame;
+    private Functions functions;
     private int pos;
     
     public EditRoute() {
@@ -30,7 +31,13 @@ public class EditRoute extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                CancelWarning frame = new CancelWarning();
+                CancelWarning frame = new CancelWarning() {
+                    @Override
+                    public void close() {
+                        EditRoute.this.setEnabled(true);
+                        dispose();
+                    }
+                };
         
                 frame.getEliminar().addActionListener((ActionEvent e1) -> {
                     frame.dispose();
@@ -55,8 +62,8 @@ public class EditRoute extends javax.swing.JFrame {
         jScrollPane1.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
     }
     
-    public void setMainFrame(Main main_frame) {
-        this.main_frame = main_frame;
+    public void setFunctions(Functions functions) {
+        this.functions = functions;
     }
     
     public Route getRoute() {
@@ -64,22 +71,22 @@ public class EditRoute extends javax.swing.JFrame {
     }
     
     public boolean initRouters(ArrayList<Router> neighbor_routers) {
-        Router router = main_frame.getSelectedRouter();
+        Router router = functions.getSelectedRouter();
         router_a.setText(router.getNombre());
         
-        for (int i = 0; i < main_frame.getFunctions().getRouters().size(); i++) {
+        for (int i = 0; i < functions.getRouters().size(); i++) {
             boolean exists = false;
             
             for (int j = 0; j < neighbor_routers.size(); j++) {
-                if (main_frame.getFunctions().getRouters().getRouter(i) == neighbor_routers.get(j)) {
+                if (functions.getRouters().getRouter(i).getId() == neighbor_routers.get(j).getId()) {
                     exists = true;
                     break;
                 }
             }
             
-            if (router == main_frame.getFunctions().getRouters().getRouter(i)) exists = true;
+            if (router.getId() == functions.getRouters().getRouter(i).getId()) exists = true;
             
-            if (!exists) router_b.addItem(main_frame.getFunctions().getRouters().getRouter(i));
+            if (!exists) router_b.addItem(functions.getRouters().getRouter(i));
         }
         
         return router_b.getItemCount() > 0;
@@ -115,7 +122,7 @@ public class EditRoute extends javax.swing.JFrame {
     
     public void setRoute() {
         if (pos == 0) {
-            route.setRouter_a(main_frame.getSelectedRouter());
+            route.setRouter_a(functions.getSelectedRouter());
             route.setRouter_b((Router) router_b.getSelectedItem());
             route.setIp_a(ip_a.getText());
             route.setIp_b(ip_b.getText());
@@ -124,7 +131,7 @@ public class EditRoute extends javax.swing.JFrame {
         }
         else {
             route.setRouter_a((Router) router_b.getSelectedItem());
-            route.setRouter_b(main_frame.getSelectedRouter());
+            route.setRouter_b(functions.getSelectedRouter());
             route.setIp_a(ip_b.getText());
             route.setIp_b(ip_a.getText());
             route.setMask_a(mask_b.getText());
@@ -550,7 +557,13 @@ public class EditRoute extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void customButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customButton1ActionPerformed
-        CancelWarning frame = new CancelWarning();
+        CancelWarning frame = new CancelWarning() {
+            @Override
+            public void close() {
+                EditRoute.this.setEnabled(true);
+                dispose();
+            }
+        };
         
         frame.getEliminar().addActionListener((ActionEvent e1) -> {
             frame.dispose();

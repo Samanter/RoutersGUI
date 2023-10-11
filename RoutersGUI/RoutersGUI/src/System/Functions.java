@@ -19,17 +19,20 @@ public class Functions implements Serializable {
     private final RoutersList routers;
     private final RoutesList rutas;
     private final SerializablePriorityQueue ids;
+    private Router selected_router;
     
     public Functions() {
         routers = new RoutersList();
         rutas = new RoutesList();
         ids = new SerializablePriorityQueue();
+        selected_router = null;
     }
     
     public Functions(Functions f) {
         routers = new RoutersList(f.getRouters());
         rutas = new RoutesList(f.getRutas());
         ids = new SerializablePriorityQueue();
+        selected_router = new Router(f.getSelectedRouter());
     }
     
     public PriorityQueue<Integer> getIds() {
@@ -74,6 +77,14 @@ public class Functions implements Serializable {
     
     public void editRuta(Route ruta) {
         rutas.editRuta(ruta);
+    }
+    
+    public void setSelectedRouter(Router router) {
+        selected_router = router;
+    }
+    
+    public Router getSelectedRouter() {
+        return selected_router;
     }
     
     public ArrayList<Router> neighbors(Router router) {
