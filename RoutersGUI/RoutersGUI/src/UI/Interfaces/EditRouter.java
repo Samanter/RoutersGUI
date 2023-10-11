@@ -62,7 +62,13 @@ public class EditRouter extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                CancelWarning frame = new CancelWarning();
+                CancelWarning frame = new CancelWarning() {
+                    @Override
+                    public void close() {
+                        EditRouter.this.setEnabled(true);
+                        dispose();
+                    }
+                };
         
                 frame.getEliminar().addActionListener((ActionEvent e1) -> {
                     frame.dispose();
@@ -96,11 +102,11 @@ public class EditRouter extends javax.swing.JFrame {
                         table_routes.set(row, aux);
                         
                         temp_functions.editRuta(getRoute());
-                        routingTable(main_frame.getSelectedRouter());
+                        routingTable(temp_functions.getSelectedRouter());
                     }
                 };
-
-                frame.setMainFrame(main_frame);
+                
+                frame.setFunctions(temp_functions);
                 frame.initData(pos_list.get(row), table_routes.get(row));
                 setEnabled(false);
                 frame.setVisible(true);
@@ -108,7 +114,13 @@ public class EditRouter extends javax.swing.JFrame {
             
             @Override
             public void onDelete(int row) {
-                RouteWarning frame = new RouteWarning();
+                RouteWarning frame = new RouteWarning() {
+                    @Override
+                    public void close() {
+                        EditRouter.this.setEnabled(true);
+                        dispose();
+                    }
+                };
                 
                 frame.getEliminar().addActionListener((ActionEvent e1) -> {
                     if (!is_new.get(row)) {
@@ -116,7 +128,7 @@ public class EditRouter extends javax.swing.JFrame {
                     }
                     
                     temp_functions.removeRuta(table_routes.get(row));
-                    routingTable(main_frame.getSelectedRouter());
+                    routingTable(temp_functions.getSelectedRouter());
                     
                     table_routes.remove(row);
                     table1.removeRow(row);
@@ -154,7 +166,7 @@ public class EditRouter extends javax.swing.JFrame {
             };
             
             frame.setFunctions(temp_functions);
-            frame.setRouters(main_frame.getSelectedRouter(), temp_functions.getRouter((int) table2.getValueAt(row, 0)));
+            frame.setRouters(temp_functions.getSelectedRouter(), temp_functions.getRouter((int) table2.getValueAt(row, 0)));
             frame.initData();
             frame.setVisible(true);
             setEnabled(false);
@@ -170,7 +182,10 @@ public class EditRouter extends javax.swing.JFrame {
     
     public void setMainFrame(Main main_frame) {
         this.main_frame = main_frame;
-        temp_functions = new Functions(main_frame.getFunctions());
+    }
+    
+    public void setFunctions(Functions functions) {
+        temp_functions = new Functions(functions);
     }
     
     public String getRouterName() {
@@ -194,24 +209,24 @@ public class EditRouter extends javax.swing.JFrame {
     }
     
     public void initData() {
-        routerName.setText(main_frame.getSelectedRouter().getNombre());
-        modelName.setSelectedItem(main_frame.getSelectedRouter().getModelo());
-        idLabel.setText(((Integer) main_frame.getSelectedRouter().getId()).toString());
+        routerName.setText(temp_functions.getSelectedRouter().getNombre());
+        modelName.setSelectedItem(temp_functions.getSelectedRouter().getModelo());
+        idLabel.setText(((Integer) temp_functions.getSelectedRouter().getId()).toString());
         
-        for (Route route : main_frame.getFunctions().getRutas().getList()) {
-            if (route.getRouter_a().getId() == main_frame.getSelectedRouter().getId()) {
+        for (Route route : temp_functions.getRutas().getList()) {
+            if (route.getRouter_a().getId() == temp_functions.getSelectedRouter().getId()) {
                 table1.addRow(routeObject(0, route));
             }
-            else if (route.getRouter_b().getId() == main_frame.getSelectedRouter().getId())  {
+            else if (route.getRouter_b().getId() == temp_functions.getSelectedRouter().getId())  {
                 table1.addRow(routeObject(1, route));
             }
         }
         
-        routingTable(main_frame.getSelectedRouter());
+        routingTable(temp_functions.getSelectedRouter());
     }
     
     public void routingTable(Router router) {
-        ArrayList<PathInfo> paths = temp_functions.findPaths(main_frame.getSelectedRouter());
+        ArrayList<PathInfo> paths = temp_functions.findPaths(temp_functions.getSelectedRouter());
         table2.clearTable();
         
         for (PathInfo path_info : paths) {
@@ -575,7 +590,13 @@ public class EditRouter extends javax.swing.JFrame {
     }//GEN-LAST:event_customButton2ActionPerformed
 
     private void customButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customButton1ActionPerformed
-        CancelWarning frame = new CancelWarning();
+        CancelWarning frame = new CancelWarning() {
+            @Override
+            public void close() {
+                EditRouter.this.setEnabled(true);
+                dispose();
+            }
+        };
         
         frame.getEliminar().addActionListener((ActionEvent e1) -> {
             frame.dispose();
@@ -593,7 +614,7 @@ public class EditRouter extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         invalid1.setVisible(false);
-        if (main_frame.getFunctions().getRouters().size() < 2) invalid1.setVisible(true);
+        if (temp_functions.getRouters().size() < 2) invalid1.setVisible(true);
         
         if (!invalid1.isVisible()) {
             EditRoute frame = new EditRoute() {
@@ -608,18 +629,19 @@ public class EditRouter extends javax.swing.JFrame {
                     table1.addRow(setTable());
                     table_routes.add(getRoute());
                     is_new.add(true);
+                    pos_list.add(0);
                     
                     temp_functions.addRuta(getRoute());
-                    routingTable(main_frame.getSelectedRouter());
+                    routingTable(temp_functions.getSelectedRouter());
                 }
             };
 
-            frame.setMainFrame(main_frame);
+            frame.setFunctions(temp_functions);
             
             ArrayList<Router> table_neighbors = new ArrayList();
             
             for (Route route : table_routes) {
-                if (route.getRouter_a() != main_frame.getSelectedRouter()) {
+                if (route.getRouter_a() != temp_functions.getSelectedRouter()) {
                     table_neighbors.add(route.getRouter_a());
                 }
                 else {

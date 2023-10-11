@@ -9,6 +9,7 @@ public class SaveBeforeClosing extends javax.swing.JFrame {
         initComponents();
         
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setResizable(false);
         
         addWindowListener(new WindowAdapter() {
             @Override

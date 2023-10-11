@@ -9,11 +9,12 @@ public class CancelWarning extends javax.swing.JFrame {
         initComponents();
         
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setResizable(false);
         
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                dispose();
+                close();
             }
         });
     }
@@ -24,6 +25,9 @@ public class CancelWarning extends javax.swing.JFrame {
     
     public UI.Misc.CustomButton getCancelar() {
         return cancelar;
+    }
+    
+    public void close() {
     }
 
     @SuppressWarnings("unchecked")

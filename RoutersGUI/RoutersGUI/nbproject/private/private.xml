@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/sam/Documents/RoutersGUI/RoutersGUI/RoutersGUI/src/UI/Interfaces/Help.java</file>
-            <file>file:/home/sam/Documents/RoutersGUI/RoutersGUI/RoutersGUI/src/UI/Interfaces/ChooseRouters.java</file>
-            <file>file:/home/sam/Documents/RoutersGUI/RoutersGUI/RoutersGUI/src/UI/Interfaces/Main.java</file>
-            <file>file:/home/sam/Documents/RoutersGUI/RoutersGUI/RoutersGUI/src/System/Functions.java</file>
+            <file>file:/C:/Users/sam/Documents/NetBeansProjects/RoutersGUI/RoutersGUI/RoutersGUI/src/UI/Warnings/RouteWarning.java</file>
+            <file>file:/C:/Users/sam/Documents/NetBeansProjects/RoutersGUI/RoutersGUI/RoutersGUI/src/UI/Interfaces/Main.java</file>
+            <file>file:/C:/Users/sam/Documents/NetBeansProjects/RoutersGUI/RoutersGUI/RoutersGUI/src/UI/Warnings/NoRoutesFound.java</file>
+            <file>file:/C:/Users/sam/Documents/NetBeansProjects/RoutersGUI/RoutersGUI/RoutersGUI/src/UI/Warnings/CancelWarning.java</file>
         </group>
     </open-files>
 </project-private>

@@ -18,6 +18,14 @@ public class Router implements Serializable {
         panel = new RouterPanel(nombre);
     }
     
+    public Router(Router router) {
+        this.id = router.getId();
+        this.nombre = router.getNombre();
+        this.modelo = router.getModelo();
+        this.list_id = router.getListId();
+        this.panel = router.getPanel();
+    }
+    
     public int getId() {
         return id;
     }
